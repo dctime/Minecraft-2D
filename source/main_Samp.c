@@ -1,10 +1,11 @@
 /* Includes ------------------------------------------------------------------*/
-
+#include <math.h>
 #include "stm32f4xx.h"
 #include "stm324xg_lcd_sklin.h"
 #include "user_defined.h"
 #include <stdio.h>	// for sprintf
 #include "touch_module.h"
+#include "dctime_lcd.h"
 
 #define LCD_Width 320
 #define LCD_Height 240
@@ -67,7 +68,6 @@ startup:
 //====================================
 	
 	LCD_Clear(LCD_COLOR_LIGHTBLUE);
-	
 
 	#define JPG_fileAddress	0x08020000
 	
@@ -80,6 +80,98 @@ startup:
 	
 	uint8_t res;
 	res = LCD_DrawJPG(0, 0, (uint8_t *) JPG_fileAddress, 100, 100);
+	
+	#include "matrix.h"
+	#include "dctimegl.h"
+
+	#define M_PI 3.14159265358979323846
+	
+	Matrix* cube = create_matrix(4, 8);
+	double cubePoints[8][3] = {
+			{-1, -1, -1}, // 0
+			{ 1, -1, -1}, // 1
+			{ 1,  1, -1}, // 2
+			{-1,  1, -1}, // 3
+			{-1, -1,  1}, // 4
+			{ 1, -1,  1}, // 5
+			{ 1,  1,  1}, // 6
+			{-1,  1,  1}  // 7
+	};
+	for (int pointIndex = 0; pointIndex < cube->cols; pointIndex++) {
+		cube->data[cube->cols*0+pointIndex] = cubePoints[pointIndex][0];
+		cube->data[cube->cols*1+pointIndex] = cubePoints[pointIndex][1];
+		cube->data[cube->cols*2+pointIndex] = cubePoints[pointIndex][2];
+		cube->data[cube->cols*3+pointIndex] = 1;
+	}
+	
+	int rowsCount = 0;
+	int columnCount = 0;
+
+	Matrix* scaledMatrix = scaleMatrix(cube, 0.5, 0.5, 0.5);
+	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(scaledMatrix, M_PI/180.0*45.0);
+	Matrix* rotatedMatrixAxisY = rotateMatrixAxisY(rotatedMatrixAxisX, M_PI/180.0*45.0);
+	
+	double degree = 0;
+	
+	struct Buffer* buffer = createBuffer();
+	LCD_Clear(WHITE);
+	while (1) {
+		clearBuffer(WHITE, buffer);
+		degree += 1;
+		Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(rotatedMatrixAxisY, M_PI/180.0*degree);
+		Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisZ, 0, 0, 2);
+		Matrix* projectedMatrix = projectMatrix(translatedMatrix, 70.0/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, 0.1, 100.0);
+		processProjectedMatrix(projectedMatrix);
+		
+		// LCD_DrawVLine(50, 50, 50);
+		// Buffer_DrawVLine(50, 50, 50, buffer, BLACK);
+//		Buffer_FillCircle(100, 100, 10, buffer, BLACK);
+		struct ScreenCoord points[8];
+		
+		for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
+			struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
+			points[columnIndex] = coord;
+			
+			if (coord.x < 0 || coord.x > LCD_Width) continue;
+			if (coord.y < 0 || coord.y > LCD_Height) continue;
+			Buffer_FillCircle(coord.x, coord.y, 5, buffer, BLACK);
+		}
+		
+		
+		for (int i = 1; i < 8; i++) {
+			for (int j = 0; j < i; j++) {
+				Buffer_DrawLine(points[i].x, points[i].y, points[j].x, points[j].y, buffer, BLACK);
+			}
+		}
+		
+//		delay_ms(2);
+//		LCD_SetTextColor(WHITE);
+//		for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
+//			struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
+//			points[columnIndex] = coord;
+//			
+//			if (coord.x < 0 || coord.x > LCD_Width) continue;
+//			if (coord.y < 0 || coord.y > LCD_Height) continue;
+//			Buffer_FillCircle(coord.x, coord.y, 5, buffer);
+//		}
+//		
+//		for (int i = 1; i < 8; i++) {
+//			for (int j = 0; j < i; j++) {
+//				Buffer_DrawLine(points[i].x, points[i].y, points[j].x, points[j].y, buffer);
+//			}
+//		}
+		
+		drawBuffer(buffer);
+		free_matrix(rotatedMatrixAxisZ);
+		free_matrix(translatedMatrix);
+		free_matrix(projectedMatrix);
+		delay_ms(10);
+	}
+	
+	free_matrix(rotatedMatrixAxisX);
+	free_matrix(rotatedMatrixAxisY);
+	free_matrix(scaledMatrix);
+	free_matrix(cube);
 	
 	#define JPG_OK 0
 	if (res != JPG_OK)

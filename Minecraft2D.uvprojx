@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\User_common;.\GLCD;.\GLCD\bmp_files;.\SPI_touch;.\RNG;.\GLCD\tjpgd3\src</IncludePath>
+              <IncludePath>.\User_common;.\GLCD;.\GLCD\bmp_files;.\SPI_touch;.\RNG;.\GLCD\tjpgd3\src;.\MatrixLib</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -417,6 +417,11 @@
               <FileName>tjpgd.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\GLCD\tjpgd3\src\tjpgd.c</FilePath>
+            </File>
+            <File>
+              <FileName>dctime_lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\GLCD\dctime_lcd.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -579,6 +584,21 @@
               <FileName>rng.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\RNG\rng.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Matrix</GroupName>
+          <Files>
+            <File>
+              <FileName>matrix.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MatrixLib\matrix.c</FilePath>
+            </File>
+            <File>
+              <FileName>dctimegl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MatrixLib\dctimegl.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1002,6 +1022,11 @@
               <FileType>1</FileType>
               <FilePath>.\GLCD\tjpgd3\src\tjpgd.c</FilePath>
             </File>
+            <File>
+              <FileName>dctime_lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\GLCD\dctime_lcd.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1214,6 +1239,21 @@
               <FileName>rng.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\RNG\rng.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Matrix</GroupName>
+          <Files>
+            <File>
+              <FileName>matrix.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MatrixLib\matrix.c</FilePath>
+            </File>
+            <File>
+              <FileName>dctimegl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\MatrixLib\dctimegl.c</FilePath>
             </File>
           </Files>
         </Group>
