@@ -1,6 +1,7 @@
 #include "stm324xg_lcd_sklin.h"
 #include "dctime_lcd.h"
 #include "dctimegl.h"
+#include <math.h>
 
 void LCD_OpenWin(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
@@ -181,8 +182,9 @@ void Buffer_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, struct 
 		{
 			goto escape;
 		}
-		
-		writeBuffer((uint16_t)x, (uint16_t)y, buffer, color);
+
+			writeBuffer((uint16_t)x, (uint16_t)y, buffer, color);
+
 escape:
     num += numadd;              /* Increase the numerator by the top of the fraction */
     if (num >= den)             /* Check if numerator >= denominator */
@@ -220,4 +222,13 @@ uint16_t RGB332ToRGB565(uint8_t n) {
 	
 	uint16_t ans = r5 << 11 | g6 << 5 | b5;
 	return ans;
+}
+
+// 0 - 1 to 0 - 8
+uint8_t RGB332GrayScale(double z) {
+	uint8_t scale = 8 * z*z*z*z*z;
+	uint8_t fullR = scale;
+	uint8_t fullG = scale;
+	uint8_t fullB = scale/2;
+	return fullR << 5 | fullG << 2 | fullB;
 }

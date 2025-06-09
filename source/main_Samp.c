@@ -1,11 +1,12 @@
 /* Includes ------------------------------------------------------------------*/
-#include <math.h>
 #include "stm32f4xx.h"
 #include "stm324xg_lcd_sklin.h"
 #include "user_defined.h"
 #include <stdio.h>	// for sprintf
 #include "touch_module.h"
 #include "dctime_lcd.h"
+#include "matrix.h"
+#include "dctimegl.h"
 
 #define LCD_Width 320
 #define LCD_Height 240
@@ -80,16 +81,14 @@ startup:
 	
 	uint8_t res;
 	res = LCD_DrawJPG(0, 0, (uint8_t *) JPG_fileAddress, 100, 100);
-	
-	#include "matrix.h"
-	#include "dctimegl.h"
+
 
 	#define M_PI 3.14159265358979323846
 	
-	#define POINTS_NUM 36
+	#define POINTS_NUM 48
 	
 	Matrix* cube = create_matrix(4, POINTS_NUM);
-	double cubeVertices[8][3] = {
+	double cubeVertices[16][3] = {
 			{-1, -1, -1}, // 0
 			{ 1, -1, -1}, // 1
 			{ 1,  1, -1}, // 2
@@ -97,22 +96,32 @@ startup:
 			{-1, -1,  1}, // 4
 			{ 1, -1,  1}, // 5
 			{ 1,  1,  1}, // 6
-			{-1,  1,  1}  // 7
+			{-1,  1,  1},  // 7
+			
+			{-2, -2, -2}, // 0
+			{ 2, -2, -2}, // 1
+			{ 2,  2, -2}, // 2
+			{-2,  2, -2}, // 3
+			{-2, -2,  2}, // 4
+			{ 2, -2,  2}, // 5
+			{ 2,  2,  2}, // 6
+			{-2,  2,  2}  // 7
 	};
 	
 	uint8_t cubePoints[POINTS_NUM] = {
-		0, 1, 2,
-		0, 2, 3,
-		5, 6, 2,
-		5, 2, 1,
-		4, 7, 5,
-		5, 7, 6,
-		4, 0, 3,
-		4, 3, 7,
-		3, 2, 6,
-		3, 6, 7,
-		0, 4, 5,
-		0, 5, 1
+		0, 1, 2, 3,
+		1, 2, 6, 5,
+		5, 6, 7, 4,
+		4, 0, 3, 7,
+		3, 2, 6, 7,
+		0, 1, 5, 4,
+		
+		8, 9, 10, 11,
+		9, 10, 14, 13,
+		13, 14, 15, 12,
+		12, 8, 11, 15,
+		11, 10, 14, 15,
+		8, 9, 13, 12,
 	};
 	
 	for (int pointIndex = 0; pointIndex < cube->cols; pointIndex++) {
@@ -125,7 +134,7 @@ startup:
 	int rowsCount = 0;
 	int columnCount = 0;
 
-	Matrix* scaledMatrix = scaleMatrix(cube, 0.5, 0.5, 0.5);
+	Matrix* scaledMatrix = scaleMatrix(cube, 0.3, 0.3, 0.3);
 	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(scaledMatrix, M_PI/180.0*45.0);
 	Matrix* rotatedMatrixAxisY = rotateMatrixAxisY(rotatedMatrixAxisX, M_PI/180.0*45.0);
 	
@@ -149,41 +158,30 @@ startup:
 		for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
 			struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
 			points[columnIndex] = coord;
+			uint16_t color = RGB332ToRGB565(RGB332GrayScale(coord.z));
 			
 			if (coord.x < 0 || coord.x > LCD_Width) continue;
 			if (coord.y < 0 || coord.y > LCD_Height) continue;
-			Buffer_FillCircle(coord.x, coord.y, 5, buffer, BLACK);
+//			Buffer_FillCircle(coord.x, coord.y, 5, buffer, color);
 		}
 		
 		
-		for (int i = 0; i < POINTS_NUM; i+=3) {
-			Buffer_DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y, buffer, BLACK);
-			Buffer_DrawLine(points[i].x, points[i].y, points[i+2].x, points[i+2].y, buffer, BLACK);
-			Buffer_DrawLine(points[i+1].x, points[i+1].y, points[i+2].x, points[i+2].y, buffer, BLACK);
+		for (int i = 0; i < POINTS_NUM; i+=4) {
+			for (int j = 0; j < 4; j++) {
+				if (points[i+j].z < 0 || points[i+j].z > 1) continue;
+			}
+			
+			Buffer_DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y, buffer, coordZsToRGB565(points[i].z, points[i+1].z));
+			Buffer_DrawLine(points[i+1].x, points[i+1].y, points[i+2].x, points[i+2].y, buffer, coordZsToRGB565(points[i+1].z, points[i+2].z));
+			Buffer_DrawLine(points[i+2].x, points[i+2].y, points[i+3].x, points[i+3].y, buffer, coordZsToRGB565(points[i+2].z, points[i+3].z));
+			Buffer_DrawLine(points[i].x, points[i].y, points[i+3].x, points[i+3].y, buffer, coordZsToRGB565(points[i].z, points[i+3].z));
 		}
 		
-//		delay_ms(2);
-//		LCD_SetTextColor(WHITE);
-//		for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
-//			struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
-//			points[columnIndex] = coord;
-//			
-//			if (coord.x < 0 || coord.x > LCD_Width) continue;
-//			if (coord.y < 0 || coord.y > LCD_Height) continue;
-//			Buffer_FillCircle(coord.x, coord.y, 5, buffer);
-//		}
-//		
-//		for (int i = 1; i < 8; i++) {
-//			for (int j = 0; j < i; j++) {
-//				Buffer_DrawLine(points[i].x, points[i].y, points[j].x, points[j].y, buffer);
-//			}
-//		}
 		
 		drawBuffer(buffer);
 		free_matrix(rotatedMatrixAxisZ);
 		free_matrix(translatedMatrix);
 		free_matrix(projectedMatrix);
-		delay_ms(10);
 	}
 	
 	free_matrix(rotatedMatrixAxisX);
@@ -204,23 +202,6 @@ startup:
 		
 		// LCD_DrawJPG(0, 0, (uint8_t *) JPG_fileAddress, 100, 100);
 	while(1);
-	
-//>>>>===== Scinario 1 =======================		
-	LCD_Clear(LCD_COLOR_WHITE);
-	Touch_sample_FreeDraw();
-	
-//>>>>===== Scinario 2 =======================		
-  Touch_sample_Sine();
-	
-	//>>>>===== Scinario 3 =======================		
-	LCD_Clear(GREEN);
-	Touch_sample_Hit();
-
-	//>>>>===== Scinario 3 =======================
-	LCD_Clear(GREEN);
-	Sample_alarmA();
-	
-	LCD_Clear(LCD_COLOR_GREEN);
 	goto startup;
 }
 

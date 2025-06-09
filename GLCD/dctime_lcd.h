@@ -39,5 +39,6 @@ void Buffer_DrawVLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, struct Buff
 
 uint8_t RGB565ToRGB332(uint16_t n);
 uint16_t RGB332ToRGB565(uint8_t n);
+uint8_t RGB332GrayScale(double z);
 
 #endif

@@ -3,6 +3,8 @@
 #include "dctimegl.h"
 #include "stdio.h"
 #include "stm324xg_lcd_sklin.h"
+#include "dctime_lcd.h"
+#include <stdbool.h>
 
 Matrix* createPerspectiveProjectionMatrix(double fov_rad, double aspect, double near, double far) {
 	Matrix* returnMatrix = create_matrix(4, 4);
@@ -124,21 +126,60 @@ struct ScreenCoord getCoordFromMatrix(int columnIndex, int screenWidth, int scre
 	coord.x = matrix->data[0*matrix->cols+columnIndex]*(screenWidth/2.0)+(screenWidth/2.0);
 //	debugText(matrix->data[1*matrix->cols+columnIndex]);
 	coord.y = matrix->data[1*matrix->cols+columnIndex]*(screenHeight/2.0)+(screenHeight/2.0);
+	coord.z = matrix->data[2*matrix->cols+columnIndex];
 	
 	return coord;
 }
 
 void debugText(double n) {
-		char c[10];
-	
-		sprintf(c, "%f", n);
+		char c[5];
+//	
+		sprintf(c, "%2.2f", n);
 		LCD_SaveFont();
-		LCD_SaveColors();
-		LCD_SetFont(&Font16);
+	  LCD_SaveColors();
+		LCD_SetFont(&Font16);	
 		LCD_SetColors(RED, WHITE); // Text = red; back = white
-		LCD_DisplayStringLineCol(12, 2, c);					
+		LCD_DisplayStringLineCol(12, 2, c);
 		LCD_RestoreColors();
 		LCD_RestoreFont();
+}
+
+uint16_t max(int x, int y) {
+	return (((x) > (y)) ? (x) : (y));
+}
+
+uint16_t min(int x, int y) {
+	return (((x) < (y)) ? (x) : (y));
+}
+
+
+uint16_t coordZsToRGB565(double z1, double z2) {
+	return RGB332ToRGB565(RGB332GrayScale((z1 + z2)/2));
+}
+
+
+bool insideTriangle(int x, int y, ScreenCoord coord1, ScreenCoord coord2, ScreenCoord coord3, int v12x, int v12y, int v23x, int v23y, int v31x, int v31y) {
+	// [0, 1] a
+	// [1, 0] b
+	// det -1
+	
+	int v1px, v1py, v2px, v2py, v3px, v3py;
+	v1px = x - coord1.x;
+	v1py = y - coord1.y;
+	v2px = x - coord2.x;
+	v2py = y - coord2.y;
+	v3px = x - coord3.x;
+	v3py = y - coord3.y;
+	
+	int det1, det2, det3;
+	det1 = v12x*v1py - v12y*v1px;
+	det2 = v23x*v2py - v23y*v2px;
+	det3 = v31x*v3py - v31y*v3px;
+	
+	if (det1 >= 0 && det2 >= 0 && det3 >= 0) {
+		return true;
+	}
+	return false;
 }
 
 

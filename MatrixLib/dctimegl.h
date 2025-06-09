@@ -2,6 +2,9 @@
 #define DCTIMEGL_H
 
 #include "matrix.h"
+#include <stdbool.h>
+#include <stdint.h>
+#include "dctime_lcd.h"
 
 Matrix* createPerspectiveProjectionMatrix(double fov_rad, double aspect, double near, double far);
 Matrix* createTranslationMatrix(double tx, double ty, double tz);
@@ -22,7 +25,12 @@ Matrix* translateMatrix(Matrix* matrix, double tx, double ty, double tz);
 void debugText(double n);
 
 typedef struct ScreenCoord {
-	double x, y;
+	// x, y 0 to LCD_Width, LCD_Height
+	// z 0 to 1
+	double x, y, z;
 }ScreenCoord;
+
+bool insideTriangle(int x, int y, ScreenCoord coord1, ScreenCoord coord2, ScreenCoord coord3, int v12x, int v12y, int v23x, int v23y, int v31x, int v31y);
+uint16_t coordZsToRGB565(double z1, double z2);
 
 #endif
