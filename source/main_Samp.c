@@ -86,8 +86,10 @@ startup:
 
 	#define M_PI 3.14159265358979323846
 	
-	Matrix* cube = create_matrix(4, 8);
-	double cubePoints[8][3] = {
+	#define POINTS_NUM 36
+	
+	Matrix* cube = create_matrix(4, POINTS_NUM);
+	double cubeVertices[8][3] = {
 			{-1, -1, -1}, // 0
 			{ 1, -1, -1}, // 1
 			{ 1,  1, -1}, // 2
@@ -97,10 +99,26 @@ startup:
 			{ 1,  1,  1}, // 6
 			{-1,  1,  1}  // 7
 	};
+	
+	uint8_t cubePoints[POINTS_NUM] = {
+		0, 1, 2,
+		0, 2, 3,
+		5, 6, 2,
+		5, 2, 1,
+		4, 7, 5,
+		5, 7, 6,
+		4, 0, 3,
+		4, 3, 7,
+		3, 2, 6,
+		3, 6, 7,
+		0, 4, 5,
+		0, 5, 1
+	};
+	
 	for (int pointIndex = 0; pointIndex < cube->cols; pointIndex++) {
-		cube->data[cube->cols*0+pointIndex] = cubePoints[pointIndex][0];
-		cube->data[cube->cols*1+pointIndex] = cubePoints[pointIndex][1];
-		cube->data[cube->cols*2+pointIndex] = cubePoints[pointIndex][2];
+		cube->data[cube->cols*0+pointIndex] = cubeVertices[cubePoints[pointIndex]][0];
+		cube->data[cube->cols*1+pointIndex] = cubeVertices[cubePoints[pointIndex]][1];
+		cube->data[cube->cols*2+pointIndex] = cubeVertices[cubePoints[pointIndex]][2];
 		cube->data[cube->cols*3+pointIndex] = 1;
 	}
 	
@@ -126,7 +144,7 @@ startup:
 		// LCD_DrawVLine(50, 50, 50);
 		// Buffer_DrawVLine(50, 50, 50, buffer, BLACK);
 //		Buffer_FillCircle(100, 100, 10, buffer, BLACK);
-		struct ScreenCoord points[8];
+		struct ScreenCoord points[POINTS_NUM];
 		
 		for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
 			struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
@@ -138,10 +156,10 @@ startup:
 		}
 		
 		
-		for (int i = 1; i < 8; i++) {
-			for (int j = 0; j < i; j++) {
-				Buffer_DrawLine(points[i].x, points[i].y, points[j].x, points[j].y, buffer, BLACK);
-			}
+		for (int i = 0; i < POINTS_NUM; i+=3) {
+			Buffer_DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y, buffer, BLACK);
+			Buffer_DrawLine(points[i].x, points[i].y, points[i+2].x, points[i+2].y, buffer, BLACK);
+			Buffer_DrawLine(points[i+1].x, points[i+1].y, points[i+2].x, points[i+2].y, buffer, BLACK);
 		}
 		
 //		delay_ms(2);

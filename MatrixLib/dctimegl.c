@@ -110,7 +110,7 @@ Matrix* rotateMatrixAxisZ(Matrix* matrix, double rad) {
 void processProjectedMatrix(Matrix* matrix) {
 	for (int columnIndex = 0; columnIndex < matrix->cols; columnIndex++) {
 		double w = matrix->data[3*matrix->cols+columnIndex];
-		debugText(w);
+// 		debugText(w);
 		matrix->data[0*matrix->cols+columnIndex] = matrix->data[0*matrix->cols+columnIndex] / w;
 		matrix->data[1*matrix->cols+columnIndex] = matrix->data[1*matrix->cols+columnIndex] / w;
 		matrix->data[2*matrix->cols+columnIndex] = matrix->data[2*matrix->cols+columnIndex] / w;
