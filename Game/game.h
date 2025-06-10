@@ -6,7 +6,7 @@
 
 #define FLOOR_WIDTH 15
 #define FLOOR_HEIGHT 8
-#define LEVEL1POINTSNUM 3
+#define LEVEL1POINTSNUM 19
 #define M_PI 3.14159265358979323846
 	
 typedef struct Level {
