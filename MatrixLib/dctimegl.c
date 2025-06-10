@@ -132,16 +132,18 @@ struct ScreenCoord getCoordFromMatrix(int columnIndex, int screenWidth, int scre
 }
 
 void debugText(double n) {
-		char c[5];
+		char c[10];
 //	
-		sprintf(c, "%2.2f", n);
-		LCD_SaveFont();
-	  LCD_SaveColors();
-		LCD_SetFont(&Font16);	
-		LCD_SetColors(RED, WHITE); // Text = red; back = white
-		LCD_DisplayStringLineCol(12, 2, c);
-		LCD_RestoreColors();
-		LCD_RestoreFont();
+		if (sprintf(c, "%f", n)) {
+			LCD_SaveFont();
+			LCD_SaveColors();
+			LCD_SetFont(&Font16);	
+			LCD_SetColors(RED, WHITE); // Text = red; back = white
+			LCD_DisplayStringLineCol(12, 2, c);
+			LCD_RestoreColors();
+			LCD_RestoreFont();
+		}
+
 }
 
 uint16_t max(int x, int y) {

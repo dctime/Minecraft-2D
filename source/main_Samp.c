@@ -7,6 +7,7 @@
 #include "dctime_lcd.h"
 #include "matrix.h"
 #include "dctimegl.h"
+#include "game.h"
 
 #define LCD_Width 320
 #define LCD_Height 240
@@ -81,10 +82,9 @@ startup:
 	
 	uint8_t res;
 	res = LCD_DrawJPG(0, 0, (uint8_t *) JPG_fileAddress, 100, 100);
-
-
-	#define M_PI 3.14159265358979323846
 	
+	play();
+
 	#define POINTS_NUM 48
 	
 	Matrix* cube = create_matrix(4, POINTS_NUM);
@@ -141,9 +141,9 @@ startup:
 	double degree = 0;
 	
 	struct Buffer* buffer = createBuffer();
-	LCD_Clear(WHITE);
+	LCD_Clear(BLACK);
 	while (1) {
-		clearBuffer(WHITE, buffer);
+		clearBuffer(BLACK, buffer);
 		degree += 1;
 		Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(rotatedMatrixAxisY, M_PI/180.0*degree);
 		Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisZ, 0, 0, 2);
@@ -158,7 +158,7 @@ startup:
 		for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
 			struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
 			points[columnIndex] = coord;
-			uint16_t color = RGB332ToRGB565(RGB332GrayScale(coord.z));
+//			uint16_t color = RGB332ToRGB565(RGB332GrayScale(coord.z));
 			
 			if (coord.x < 0 || coord.x > LCD_Width) continue;
 			if (coord.y < 0 || coord.y > LCD_Height) continue;
@@ -171,10 +171,10 @@ startup:
 				if (points[i+j].z < 0 || points[i+j].z > 1) continue;
 			}
 			
-			Buffer_DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y, buffer, coordZsToRGB565(points[i].z, points[i+1].z));
-			Buffer_DrawLine(points[i+1].x, points[i+1].y, points[i+2].x, points[i+2].y, buffer, coordZsToRGB565(points[i+1].z, points[i+2].z));
-			Buffer_DrawLine(points[i+2].x, points[i+2].y, points[i+3].x, points[i+3].y, buffer, coordZsToRGB565(points[i+2].z, points[i+3].z));
-			Buffer_DrawLine(points[i].x, points[i].y, points[i+3].x, points[i+3].y, buffer, coordZsToRGB565(points[i].z, points[i+3].z));
+			Buffer_DrawLine(points[i].x, points[i].y, points[i+1].x, points[i+1].y, buffer, WHITE);
+			Buffer_DrawLine(points[i+1].x, points[i+1].y, points[i+2].x, points[i+2].y, buffer, WHITE);
+			Buffer_DrawLine(points[i+2].x, points[i+2].y, points[i+3].x, points[i+3].y, buffer, WHITE);
+			Buffer_DrawLine(points[i].x, points[i].y, points[i+3].x, points[i+3].y, buffer, WHITE);
 		}
 		
 		
@@ -188,6 +188,7 @@ startup:
 	free_matrix(rotatedMatrixAxisY);
 	free_matrix(scaledMatrix);
 	free_matrix(cube);
+	freeBuffer(buffer);
 	
 	#define JPG_OK 0
 	if (res != JPG_OK)

@@ -27,7 +27,7 @@ void debugText(double n);
 typedef struct ScreenCoord {
 	// x, y 0 to LCD_Width, LCD_Height
 	// z 0 to 1
-	double x, y, z;
+	float x, y, z;
 }ScreenCoord;
 
 bool insideTriangle(int x, int y, ScreenCoord coord1, ScreenCoord coord2, ScreenCoord coord3, int v12x, int v12y, int v23x, int v23y, int v31x, int v31y);

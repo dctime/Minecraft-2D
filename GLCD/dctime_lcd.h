@@ -25,8 +25,8 @@ typedef struct Buffer {
 } Buffer;
 
 Buffer* createBuffer();
+void freeBuffer(Buffer* buffer);
 void clearBuffer(uint16_t n, Buffer* buffer);
-
 
 uint16_t bufferGetColor(int x, int y, struct Buffer* buffer);
 void writeBuffer(int x, int y, struct Buffer* buffer, uint16_t color);

@@ -6,7 +6,7 @@
 typedef struct {
     size_t rows;
     size_t cols;
-    double *data;
+    float *data;
 } Matrix;
 
 // Basic operations

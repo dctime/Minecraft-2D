@@ -5,6 +5,10 @@
 
 void LCD_OpenWin(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
+void freeBuffer(Buffer* buffer) {
+	free(buffer);
+}
+
 void drawBuffer(struct Buffer* buffer) {
 	LCD_OpenWin(0, 0, LCD_Width-1, LCD_Height-1);
 	for (int y = 0; y < LCD_Height; y++) {

@@ -7,7 +7,7 @@ Matrix *create_matrix(size_t rows, size_t cols) {
     Matrix *matrix = (Matrix *)malloc(sizeof(Matrix));
     matrix->rows = rows;
     matrix->cols = cols;
-    matrix->data = (double *)malloc(rows * cols * sizeof(double));
+    matrix->data = (float *)malloc(rows * cols * sizeof(float));
     return matrix;
 }
 

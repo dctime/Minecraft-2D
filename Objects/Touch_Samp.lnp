@@ -13,6 +13,7 @@
 ".\objects\rng.o"
 ".\objects\matrix.o"
 ".\objects\dctimegl.o"
+".\objects\game.o"
 ".\objects\startup_stm32f407xx.o"
 ".\objects\system_stm32f4xx.o"
 --strict --scatter ".\Objects\Touch_Samp.sct"

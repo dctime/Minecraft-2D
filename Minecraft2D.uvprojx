@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>LineColoredZ</Define>
+              <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\User_common;.\GLCD;.\GLCD\bmp_files;.\SPI_touch;.\RNG;.\GLCD\tjpgd3\src;.\MatrixLib</IncludePath>
+              <IncludePath>.\User_common;.\GLCD;.\GLCD\bmp_files;.\SPI_touch;.\RNG;.\GLCD\tjpgd3\src;.\MatrixLib;.\Game</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -478,6 +478,16 @@
               <FileName>dctimegl.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MatrixLib\dctimegl.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Game</GroupName>
+          <Files>
+            <File>
+              <FileName>game.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\game.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -961,6 +971,16 @@
               <FileName>dctimegl.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\MatrixLib\dctimegl.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Game</GroupName>
+          <Files>
+            <File>
+              <FileName>game.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\game.c</FilePath>
             </File>
           </Files>
         </Group>
