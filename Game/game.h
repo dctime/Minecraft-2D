@@ -11,12 +11,10 @@
 	
 typedef struct Level {
 	// 15*8
-//	uint8_t floor[FLOOR_HEIGHT][FLOOR_WIDTH];
+	uint8_t floor[FLOOR_HEIGHT][FLOOR_WIDTH];
 	uint8_t midX;
 	uint8_t midY;
 	Matrix* floorMatrix; // stores render 3d coords
-	struct ScreenCoord* screenCoords; // stores projected 2d coords
-	int screenCoordsSize;
 	
 } Level;
 
@@ -24,9 +22,7 @@ void play();
 
 Level* initLevel();
 void freeLevel(Level* level);
-void freeScreenCoords(Level* level);
 
-void projectLevelToScreenCoords(Level* level);
-void drawLevelToBuffer(Level* level, Buffer* buffer);
+void projectLevelToBuffer(Level* level, Buffer* buffer);
 
 #endif

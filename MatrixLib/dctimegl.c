@@ -125,7 +125,7 @@ struct ScreenCoord getCoordFromMatrix(int columnIndex, int screenWidth, int scre
 //	debugText(matrix->data[0*matrix->cols+columnIndex]);
 	coord.x = matrix->data[0*matrix->cols+columnIndex]*(screenWidth/2.0)+(screenWidth/2.0);
 //	debugText(matrix->data[1*matrix->cols+columnIndex]);
-	coord.y = matrix->data[1*matrix->cols+columnIndex]*(screenHeight/2.0)+(screenHeight/2.0);
+	coord.y = -matrix->data[1*matrix->cols+columnIndex]*(screenHeight/2.0)+(screenHeight/2.0);
 	coord.z = matrix->data[2*matrix->cols+columnIndex];
 	
 	return coord;
