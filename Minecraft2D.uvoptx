@@ -164,8 +164,8 @@
       <MemoryWindow1>
         <Mm>
           <WinNumber>1</WinNumber>
-          <SubType>8</SubType>
-          <ItemText>aShowFREQs</ItemText>
+          <SubType>1</SubType>
+          <ItemText>0x20000290</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>
