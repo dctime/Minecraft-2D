@@ -3,9 +3,9 @@
 <title>Static Call Graph - [.\Objects\Touch_Samp.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\Touch_Samp.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6230001: Last Updated: Thu Jun 12 20:49:54 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6230001: Last Updated: Thu Jun 12 21:12:05 2025
 <BR><P>
-<H3>Maximum Stack Usage =       1264 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =       1272 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 __rt_entry_main &rArr; main &rArr; play &rArr; projectLevelToBuffer &rArr; projectMatrix &rArr; __hardfp_tan &rArr; __kernel_tan &rArr; __kernel_poly &rArr; __aeabi_dmul
 <P>
@@ -296,7 +296,7 @@ Global Symbols
 <P><STRONG><a name="[124]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[77]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1264 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 1272 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; play &rArr; projectLevelToBuffer &rArr; projectMatrix &rArr; __hardfp_tan &rArr; __kernel_tan &rArr; __kernel_poly &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -1260,7 +1260,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[78]"></a>main</STRONG> (Thumb, 1136 bytes, Stack size 632 bytes, main_samp.o(.text.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1264 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 1272 + Unknown Stack Size
 <LI>Call Chain = main &rArr; play &rArr; projectLevelToBuffer &rArr; projectMatrix &rArr; __hardfp_tan &rArr; __kernel_tan &rArr; __kernel_poly &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free_matrix
@@ -1321,8 +1321,8 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> tjpgd_user.o(.text.LCD_DrawJPG)
 </UL>
-<P><STRONG><a name="[cf]"></a>play</STRONG> (Thumb, 304 bytes, Stack size 8 bytes, game.o(.text.play))
-<BR><BR>[Stack]<UL><LI>Max Depth = 632 + Unknown Stack Size
+<P><STRONG><a name="[cf]"></a>play</STRONG> (Thumb, 312 bytes, Stack size 16 bytes, game.o(.text.play))
+<BR><BR>[Stack]<UL><LI>Max Depth = 640 + Unknown Stack Size
 <LI>Call Chain = play &rArr; projectLevelToBuffer &rArr; projectMatrix &rArr; __hardfp_tan &rArr; __kernel_tan &rArr; __kernel_poly &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[81]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
@@ -1365,7 +1365,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;play
 </UL>
 
-<P><STRONG><a name="[d6]"></a>projectMatrix</STRONG> (Thumb, 272 bytes, Stack size 80 bytes, dctimegl.o(.text.projectMatrix))
+<P><STRONG><a name="[d6]"></a>projectMatrix</STRONG> (Thumb, 296 bytes, Stack size 80 bytes, dctimegl.o(.text.projectMatrix))
 <BR><BR>[Stack]<UL><LI>Max Depth = 296 + Unknown Stack Size
 <LI>Call Chain = projectMatrix &rArr; __hardfp_tan &rArr; __kernel_tan &rArr; __kernel_poly &rArr; __aeabi_dmul
 </UL>
@@ -1376,6 +1376,7 @@ Global Symbols
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
 <LI><a href="#[de]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_ddiv
 <LI><a href="#[c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dadd
 <LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
 </UL>
 <BR>[Called By]<UL><LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;projectLevelToBuffer
@@ -1383,8 +1384,8 @@ Global Symbols
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[db]"></a>projectPlayerRectToBuffer</STRONG> (Thumb, 768 bytes, Stack size 256 bytes, game.o(.text.projectPlayerRectToBuffer))
-<BR><BR>[Stack]<UL><LI>Max Depth = 552 + Unknown Stack Size
+<P><STRONG><a name="[db]"></a>projectPlayerRectToBuffer</STRONG> (Thumb, 840 bytes, Stack size 280 bytes, game.o(.text.projectPlayerRectToBuffer))
+<BR><BR>[Stack]<UL><LI>Max Depth = 576 + Unknown Stack Size
 <LI>Call Chain = projectPlayerRectToBuffer &rArr; projectMatrix &rArr; __hardfp_tan &rArr; __kernel_tan &rArr; __kernel_poly &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free_matrix
@@ -1397,6 +1398,7 @@ Global Symbols
 <LI><a href="#[d0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;scaleMatrix
 <LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Buffer_DrawLine
 <LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dmul
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_i2d
 </UL>
 <BR>[Called By]<UL><LI><a href="#[cf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;play
 </UL>
@@ -1751,6 +1753,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = __aeabi_dadd
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getCoordFromMatrix
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;projectMatrix
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_poly
 <LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_tan
@@ -1791,7 +1794,8 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[bf]"></a>__aeabi_i2d</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, dflt_clz.o(x$fpl$dflt))
-<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getCoordFromMatrix
+<BR><BR>[Called By]<UL><LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;projectPlayerRectToBuffer
+<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;getCoordFromMatrix
 <LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_tan
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ieee754_rem_pio2
 </UL>

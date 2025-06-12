@@ -11,8 +11,8 @@ Matrix* createPerspectiveProjectionMatrix(double fov_rad, double aspect, double 
 	double f = 1.0 / tan(fov_rad/2.0);
 	returnMatrix->data[4*0+0]=f/aspect; returnMatrix->data[4*0+1]=0;              returnMatrix->data[4*0+2]=0;              returnMatrix->data[4*0+3]=0;
 	returnMatrix->data[4*1+0]=0;          returnMatrix->data[4*1+1]=f;            returnMatrix->data[4*1+2]=0;              returnMatrix->data[4*1+3]=0;
-	returnMatrix->data[4*2+0]=0;          returnMatrix->data[4*2+1]=0;              returnMatrix->data[4*2+2]=far/(far-near); returnMatrix->data[4*2+3]=-near*far/(far-near);
-	returnMatrix->data[4*3+0]=0;          returnMatrix->data[4*3+1]=0;              returnMatrix->data[4*3+2]=1;              returnMatrix->data[4*3+3]=0;
+	returnMatrix->data[4*2+0]=0;          returnMatrix->data[4*2+1]=0;              returnMatrix->data[4*2+2]=far+near/(near-far); returnMatrix->data[4*2+3]=2*far*near/(near-far);
+	returnMatrix->data[4*3+0]=0;          returnMatrix->data[4*3+1]=0;              returnMatrix->data[4*3+2]=-1;              returnMatrix->data[4*3+3]=0;
 	
 	return returnMatrix;
 }

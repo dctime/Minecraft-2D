@@ -62,6 +62,8 @@ void initPlayer(RectPlayer* player, int startLocX, int startLocY) {
 	if (player->modelMatrix == NULL) {
 		while(1);
 	}
+	player->levelPosX = 1;
+	player->levelPosY = 1;
 	
 	
 	uint8_t modelPlayer[8][3] = {
@@ -90,7 +92,9 @@ void freeLevel(Level* level) {
 
 void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotY, double tZ, double fov, double near, double far) {
 	// level screen coord must be freed first
-	Matrix* scaledMatrix = scaleMatrix(player->modelMatrix, scale, scale, scale);
+	Matrix* translatedMatrixXY = translateMatrix(player->modelMatrix, player->levelPosX, player->levelPosY, 0);
+	Matrix* scaledMatrix = scaleMatrix(translatedMatrixXY, scale, scale, scale);
+	free_matrix(translatedMatrixXY);
 	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(scaledMatrix, rotX/360.0*2.0*M_PI);
 	free_matrix(scaledMatrix);
 	Matrix* rotatedMatrixAxisY = rotateMatrixAxisY(rotatedMatrixAxisX, rotY/360.0*2.0*M_PI);
@@ -172,8 +176,8 @@ void play() {
 	generateLevel1(level);
 	
 	clearBuffer(BLACK, buffer);
-	projectPlayerRectToBuffer(&player, buffer, 0.5, -120, 10, 8, 50, 0.1, 100.0);
-	projectLevelToBuffer(level, buffer, 0.5, -120, 10, 8, 50, 0.1, 100.0);
+	projectPlayerRectToBuffer(&player, buffer, 0.5, -60, 0, -8, 50, 0.1, 100.0);
+	projectLevelToBuffer(level, buffer, 0.5, -60, 0, -8, 50, 0.1, 100.0);
 	drawBuffer(buffer);
 	
 	freeLevel(level);

@@ -21,6 +21,8 @@ typedef struct Level {
 
 typedef struct RectPlayer {
 	Matrix* modelMatrix;
+	int levelPosX;
+	int levelPosY;
 } RectPlayer;
 
 void initPlayer(RectPlayer* player, int startLocX, int startLocY);
