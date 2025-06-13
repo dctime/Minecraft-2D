@@ -23,15 +23,22 @@ Buffer* createBuffer() {
 	Buffer* buffer = (Buffer*) malloc(sizeof(Buffer));
 	for (int i = 0; i < LCD_Width; i++) {
 		for (int j = 0; j < LCD_Height; j++) {
-			buffer->data[j][i] = 0xFF;
+			buffer->data[j][i] = 0x00;
 		}
 	}
 	return buffer;
 }
 
-void clearBuffer(uint16_t n, Buffer* buffer) {
+void clearBuffer(uint16_t n, Buffer* buffer, bool(*allowFunc)(int, int)) {
 		for (int i = 0; i < LCD_Width; i++) {
 			for (int j = 0; j < LCD_Height; j++) {
+				if (allowFunc == NULL) {
+					buffer->data[j][i] = RGB565ToRGB332(n);
+					continue;
+				}
+				if (!allowFunc(i, j)) {
+					continue;
+				}
 				buffer->data[j][i] = RGB565ToRGB332(n);
 			}
 		}
@@ -125,6 +132,16 @@ void Buffer_FillCircle(uint16_t Xcen, uint16_t Ycen, uint16_t Radius, struct Buf
     }
     Ri++;
   }
+}
+
+void Buffer_FillRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height, Buffer* buffer, uint16_t color)
+{
+	uint16_t Xend = Xpos+ Width-1, Yend = Ypos + Height-1;
+	uint16_t i, j;
+	
+	for(i = Xpos; i < Xend; i++)
+		for(j = Ypos; j < Yend; j++)
+			writeBuffer(i, j, buffer, color);
 }
 
 

@@ -41,17 +41,17 @@ I (GLCD\tjpgd3\src\tjpgdcnf.h)(0x64E725CB)
 F (.\GLCD\tjpgd3\src\tjpgd.c)(0x65815A73)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/tjpgd.o -MMD)
 I (GLCD\tjpgd3\src\tjpgd.h)(0x60DC98C8)
 I (GLCD\tjpgd3\src\tjpgdcnf.h)(0x64E725CB)
-F (.\GLCD\dctime_lcd.c)(0x68481E93)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/dctime_lcd.o -MMD)
+F (.\GLCD\dctime_lcd.c)(0x684BF6B5)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/dctime_lcd.o -MMD)
 I (GLCD\stm324xg_lcd_sklin.h)(0x67AB0170)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x684681E8)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h)(0x684681E7)
 I (C:\Users\danie\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include\core_cm4.h)(0x664BD888)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x684681E8)
 I (GLCD\.\Fonts\fonts.h)(0x5AEBEB6F)
-I (GLCD\dctime_lcd.h)(0x684838E5)
+I (GLCD\dctime_lcd.h)(0x684BEB83)
 I (MatrixLib\dctimegl.h)(0x6848412F)
 I (MatrixLib\matrix.h)(0x6848412F)
-F (.\source\main_Samp.c)(0x684847CC)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/main_samp.o -MMD)
+F (.\source\main_Samp.c)(0x684C098F)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/main_samp.o -MMD)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x684681E8)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h)(0x684681E7)
 I (C:\Users\danie\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include\core_cm4.h)(0x664BD888)
@@ -59,11 +59,11 @@ I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSI
 I (GLCD\stm324xg_lcd_sklin.h)(0x67AB0170)
 I (GLCD\.\Fonts\fonts.h)(0x5AEBEB6F)
 I (User_common\user_defined.h)(0x626BE8A6)
-I (SPI_touch\touch_module.h)(0x68147DF2)
-I (GLCD\dctime_lcd.h)(0x684838E5)
+I (SPI_touch\touch_module.h)(0x684C1407)
+I (GLCD\dctime_lcd.h)(0x684BEB83)
 I (MatrixLib\matrix.h)(0x6848412F)
 I (MatrixLib\dctimegl.h)(0x6848412F)
-I (Game\game.h)(0x684BDA09)
+I (Game\game.h)(0x684C1748)
 F (.\SPI_touch\Driver_SPI.c)(0x681DC450)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/driver_spi.o -MMD)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x684681E8)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h)(0x684681E7)
@@ -76,7 +76,7 @@ I (C:\Users\danie\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include\cor
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x684681E8)
 I (GLCD\stm324xg_lcd_sklin.h)(0x67AB0170)
 I (GLCD\.\Fonts\fonts.h)(0x5AEBEB6F)
-I (SPI_touch\touch_module.h)(0x68147DF2)
+I (SPI_touch\touch_module.h)(0x684C1407)
 F (.\SPI_touch\touch_module.c)(0x6827353C)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/touch_module.o -MMD)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x684681E8)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h)(0x684681E7)
@@ -95,18 +95,19 @@ I (MatrixLib\matrix.h)(0x6848412F)
 F (.\MatrixLib\dctimegl.c)(0x684AD18E)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/dctimegl.o -MMD)
 I (MatrixLib\matrix.h)(0x6848412F)
 I (MatrixLib\dctimegl.h)(0x6848412F)
-I (GLCD\dctime_lcd.h)(0x684838E5)
+I (GLCD\dctime_lcd.h)(0x684BEB83)
 I (GLCD\stm324xg_lcd_sklin.h)(0x67AB0170)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x684681E8)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h)(0x684681E7)
 I (C:\Users\danie\AppData\Local\Arm\Packs\ARM\CMSIS\6.1.0\CMSIS\Core\Include\core_cm4.h)(0x664BD888)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h)(0x684681E8)
 I (GLCD\.\Fonts\fonts.h)(0x5AEBEB6F)
-F (.\Game\game.c)(0x684BDCB2)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/game.o -MMD)
-I (Game\game.h)(0x684BDA09)
+F (.\Game\game.c)(0x684C179F)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/game.o -MMD)
+I (Game\game.h)(0x684C1748)
 I (MatrixLib\dctimegl.h)(0x6848412F)
 I (MatrixLib\matrix.h)(0x6848412F)
-I (GLCD\dctime_lcd.h)(0x684838E5)
+I (GLCD\dctime_lcd.h)(0x684BEB83)
+I (SPI_touch\touch_module.h)(0x684C1407)
 I (GLCD\stm324xg_lcd_sklin.h)(0x67AB0170)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x684681E8)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h)(0x684681E7)
@@ -117,9 +118,10 @@ I (Game\playerRect.h)(0x684BDA09)
 F (.\Game\playerRect.c)(0x684BDB42)(-xc -std=c99 --target=arm-arm-none-eabi -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -c-fno-rtti -funsigned-char -fshort-enums -fshort-wchar-gdwarf-4 -Ofast -ffunction-sections -Wno-packed -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-missing-noreturn -Wno-sign-conversion -Wno-nonportable-include-path -Wno-reserved-id-macro -Wno-unused-macros -Wno-documentation-unknown-command -Wno-documentation -Wno-license-management -Wno-parentheses-equality -Wno-reserved-identifier -I ./User_common -I ./GLCD -I ./GLCD/bmp_files -I ./SPI_touch -I ./RNG -I ./GLCD/tjpgd3/src -I ./MatrixLib -I ./Game-I./RTE/_Target_1-IC:/Users/danie/AppData/Local/Arm/Packs/ARM/CMSIS/6.1.0/CMSIS/Core/Include-IC:/Users/danie/AppData/Local/Arm/Packs/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include-D__UVISION_VERSION="542" -DSTM32F407xx -D_RTE_-o ./objects/playerrect.o -MMD)
 I (Game\playerRect.h)(0x684BDA09)
 I (MatrixLib\matrix.h)(0x6848412F)
-I (GLCD\dctime_lcd.h)(0x684838E5)
-I (Game\game.h)(0x684BDA09)
+I (GLCD\dctime_lcd.h)(0x684BEB83)
+I (Game\game.h)(0x684C1748)
 I (MatrixLib\dctimegl.h)(0x6848412F)
+I (SPI_touch\touch_module.h)(0x684C1407)
 I (GLCD\stm324xg_lcd_sklin.h)(0x67AB0170)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h)(0x684681E8)
 I (C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f407xx.h)(0x684681E7)

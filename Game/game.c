@@ -1,8 +1,10 @@
 #include "game.h"
 #include <stdlib.h>
-#include "stm324xg_lcd_sklin.h"
 #include "stdbool.h"
 #include "playerRect.h"
+#include "touch_module.h"
+
+static TS_StateTypeDef tsState;
 
 void generateLevel1(Level* level) {
 	bool temp[FLOOR_HEIGHT][FLOOR_WIDTH] = {
@@ -91,9 +93,80 @@ void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rot
 	free_matrix(projectedMatrix);
 }
 
+bool inRect(int touchX, int touchY, int x0, int y0, int deltaX, int deltaY) {
+	if (touchX >= x0 && touchX <= x0+deltaX) {
+		if (touchY >= y0 && touchY <= y0+deltaY) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void initButton(Button* button) {
+	button->firstTickInButton = false;
+	button->isTouchingScreenLastTick = false;
+	button->lastTouchX = -1;
+	button->lastTouchY = -1;
+	button->isHolding = false;
+}
+
+void buttonToBuffer(Button* button, Buffer* buffer) {
+	if (button->triggered) {
+		Buffer_FillRect(button->x0, button->y0, button->wX, button->wY, buffer, BLACK);
+	} else if (button->isHolding) {
+		Buffer_FillRect(button->x0, button->y0, button->wX, button->wY, buffer, DARKGRAY);
+	} else {
+		Buffer_FillRect(button->x0, button->y0, button->wX, button->wY, buffer, GRAY);
+	}
+	
+}
+
+void buttonTick(Button* button, TS_StateTypeDef* state) {
+	button->triggered = false;
+	if (state->TouchDetected) {
+		int x = state->x;
+		int y = state->y;
+		
+		if (inRect(x, y, button->x0, button->y0, button->wX, button->wY)) {
+			if (!button->isTouchingScreenLastTick) {
+				button->firstTickInButton = true;
+			}
+		}
+		if (button->firstTickInButton) {
+			// button holding
+			button->isHolding = true;
+		}
+		button->isTouchingScreenLastTick = true;
+		button->lastTouchX = x;
+		button->lastTouchY = y;
+	} else {
+		button->isHolding = false;
+		if (button->firstTickInButton) {
+			if (inRect(button->lastTouchX, button->lastTouchY, button->x0, button->y0, button->wX, button->wY)) {
+				// button triggered
+				button->triggered = true;
+			}
+			button->firstTickInButton = false;
+		}
+		button->isTouchingScreenLastTick = false;
+	}
+}
+
+
 void play() {
 	Buffer* buffer = createBuffer();
 	Level* level = initLevel();
+	
+	Button upButton = {.x0=LCD_Width/2-BUTTON_WIDTH/2, .y0=0, .wX=BUTTON_WIDTH, .wY=BUTTON_HEIGHT};
+	Button downButton = {.x0=LCD_Width/2-BUTTON_WIDTH/2, .y0=LCD_Height-BUTTON_HEIGHT, .wX=BUTTON_WIDTH, .wY=BUTTON_HEIGHT};
+	Button leftButton = {.x0=0, .y0=LCD_Height/2-BUTTON_WIDTH/2, .wX=BUTTON_HEIGHT, .wY=BUTTON_WIDTH};
+	Button rightButton = {.x0=LCD_Width-BUTTON_HEIGHT, .y0=LCD_Height/2-BUTTON_WIDTH/2, .wX=BUTTON_HEIGHT, .wY=BUTTON_WIDTH};
+	
+	initButton(&upButton);
+	initButton(&downButton);
+	initButton(&leftButton);
+	initButton(&rightButton);
+	
 	RectPlayer player;
 	initPlayer(&player, 0, 0);
 	
@@ -101,12 +174,25 @@ void play() {
 	
 	double worldRotX = -60;
 	double worldRotZ = 0;
+	int touchX;
+	int touchY;
 	while (1) {
+		TS_GetState(&tsState);
 		worldRotZ += 1;
-		
-		clearBuffer(BLACK, buffer);
+		clearBuffer(BLACK, buffer, NULL);
 		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
 		projectLevelToBuffer(level, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
+		
+		buttonTick(&upButton, &tsState);
+		buttonTick(&downButton, &tsState);
+		buttonTick(&leftButton, &tsState);
+		buttonTick(&rightButton, &tsState);
+		
+		buttonToBuffer(&upButton, buffer);
+		buttonToBuffer(&downButton, buffer);
+		buttonToBuffer(&leftButton, buffer);
+		buttonToBuffer(&rightButton, buffer);
+		
 		drawBuffer(buffer);
 	}
 

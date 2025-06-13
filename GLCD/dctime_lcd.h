@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define LCD_Width 320
 #define LCD_Height 240
@@ -26,7 +27,7 @@ typedef struct Buffer {
 
 Buffer* createBuffer();
 void freeBuffer(Buffer* buffer);
-void clearBuffer(uint16_t n, Buffer* buffer);
+void clearBuffer(uint16_t n, Buffer* buffer, bool(*allowFunc)(int, int));
 
 uint16_t bufferGetColor(int x, int y, struct Buffer* buffer);
 void writeBuffer(int x, int y, struct Buffer* buffer, uint16_t color);
@@ -36,6 +37,7 @@ void Buffer_DrawLine(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, struct 
 void Buffer_FillCircle(uint16_t Xcen, uint16_t Ycen, uint16_t Radius, struct Buffer* buffer, uint16_t color);
 void Buffer_DrawHLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, struct Buffer* buffer, uint16_t color);
 void Buffer_DrawVLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, struct Buffer* buffer, uint16_t color);
+void Buffer_FillRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height, Buffer* buffer, uint16_t color);
 
 uint8_t RGB565ToRGB332(uint16_t n);
 uint16_t RGB332ToRGB565(uint8_t n);

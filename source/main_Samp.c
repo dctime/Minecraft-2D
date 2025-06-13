@@ -29,7 +29,7 @@ void Touch_sample_Sine(void);
 void Touch_sample_Hit(void);
 void Sample_alarmA(void);
 
-static TS_StateTypeDef  TS_State;
+
 
 /**
   * @brief  Main program
@@ -73,9 +73,8 @@ startup:
 
 	#define JPG_fileAddress	0x08020000
 	
-	TS_GetState(&TS_State);
-	int x = TS_State.x;
-	int y = TS_State.y;
+
+
 	
 	LCD_SetTextColor(LCD_COLOR_GREEN);
 	LCD_FillRect(0, 0, LCD_Width-10, LCD_Height-10);
@@ -143,7 +142,7 @@ startup:
 	struct Buffer* buffer = createBuffer();
 	LCD_Clear(BLACK);
 	while (1) {
-		clearBuffer(BLACK, buffer);
+		clearBuffer(BLACK, buffer, NULL);
 		degree += 1;
 		Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(rotatedMatrixAxisY, M_PI/180.0*degree);
 		Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisZ, 0, 0, 2);
