@@ -489,6 +489,11 @@
               <FileType>1</FileType>
               <FilePath>.\Game\game.c</FilePath>
             </File>
+            <File>
+              <FileName>playerRect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\playerRect.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -981,6 +986,11 @@
               <FileName>game.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Game\game.c</FilePath>
+            </File>
+            <File>
+              <FileName>playerRect.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\playerRect.c</FilePath>
             </File>
           </Files>
         </Group>
