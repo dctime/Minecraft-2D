@@ -29,6 +29,6 @@ void play();
 Level* initLevel();
 void freeLevel(Level* level);
 
-void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotY, double tZ, double fov, double near, double far);
+void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
 
 #endif

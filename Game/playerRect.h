@@ -15,6 +15,6 @@ typedef struct RectPlayer {
 } RectPlayer;
 
 void initPlayer(RectPlayer* player, int startLocX, int startLocY);
-void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotY, double tZ, double fov, double near, double far);
+void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
 
 #endif
