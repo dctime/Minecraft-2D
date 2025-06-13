@@ -4,7 +4,17 @@
 
 void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotY, double tZ, double fov, double near, double far) {
 	// level screen coord must be freed first
-	Matrix* translatedMatrixXY = translateMatrix(player->modelMatrix, player->levelPosX1, player->levelPosY1, 0);
+	Matrix* translatedMatrixXY;
+	
+	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
+		translatedMatrixXY = translateMatrix(player->modelMatrix, player->levelPosX1, player->levelPosY1, 0);
+
+	} else if (player->levelPosX1 > player->levelPosX2) { // left flip 0, 0, -1, 0
+		Matrix* laydownMatrixY = rotateMatrixAxisY(player->modelMatrix, -90.0/360*2.0*M_PI);
+		translatedMatrixXY = translateMatrix(laydownMatrixY, player->levelPosX1+1, player->levelPosY1, 0);
+		free_matrix(laydownMatrixY);
+	} 
+	
 	Matrix* scaledMatrix = scaleMatrix(translatedMatrixXY, scale, scale, scale);
 	free_matrix(translatedMatrixXY);
 	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(scaledMatrix, rotX/360.0*2.0*M_PI);
@@ -55,10 +65,11 @@ void initPlayer(RectPlayer* player, int startLocX, int startLocY) {
 	if (player->modelMatrix == NULL) {
 		while(1);
 	}
-	player->levelPosX1 = 1;
-	player->levelPosY1 = 1;
-	player->levelPosX2 = 1;
-	player->levelPosY2 = 1;
+	player->levelPosX1 = 3;
+	player->levelPosY1 = 4;
+	// direction of the laydown
+	player->levelPosX2 = 2;
+	player->levelPosY2 = 4;
 	
 	
 	uint8_t modelPlayer[8][3] = {
