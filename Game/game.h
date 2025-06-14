@@ -24,10 +24,7 @@ typedef struct Level {
 	Matrix* floorMatrix; // stores render 3d coords
 } Level;
 
-typedef struct WorldLoc {
-	float x;
-	float y;
-} WorldLoc;
+
 
 typedef struct Button {
 	float x0, y0;
@@ -40,7 +37,7 @@ typedef struct Button {
 	// public
 	bool isHolding;
 	bool triggered;
-	void (*triggerFunc)(struct RectPlayer*);
+	void (*triggerFunc)(struct RectPlayer*, struct Level*);
 } Button;
 
 void play();
