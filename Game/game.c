@@ -102,12 +102,13 @@ bool inRect(int touchX, int touchY, int x0, int y0, int deltaX, int deltaY) {
 	return false;
 }
 
-void initButton(Button* button) {
+void initButton(Button* button, void (*triggerFunc)(RectPlayer*)) {
 	button->firstTickInButton = false;
 	button->isTouchingScreenLastTick = false;
 	button->lastTouchX = -1;
 	button->lastTouchY = -1;
 	button->isHolding = false;
+	button->triggerFunc = triggerFunc;
 }
 
 void buttonToBuffer(Button* button, Buffer* buffer) {
@@ -121,7 +122,7 @@ void buttonToBuffer(Button* button, Buffer* buffer) {
 	
 }
 
-void buttonTick(Button* button, TS_StateTypeDef* state) {
+void buttonTick(Button* button, TS_StateTypeDef* state, RectPlayer* player) {
 	button->triggered = false;
 	if (state->TouchDetected) {
 		int x = state->x;
@@ -133,7 +134,7 @@ void buttonTick(Button* button, TS_StateTypeDef* state) {
 			}
 		}
 		if (button->firstTickInButton) {
-			// button holding
+			// holding func
 			button->isHolding = true;
 		}
 		button->isTouchingScreenLastTick = true;
@@ -143,7 +144,7 @@ void buttonTick(Button* button, TS_StateTypeDef* state) {
 		button->isHolding = false;
 		if (button->firstTickInButton) {
 			if (inRect(button->lastTouchX, button->lastTouchY, button->x0, button->y0, button->wX, button->wY)) {
-				// button triggered
+				button->triggerFunc(player);
 				button->triggered = true;
 			}
 			button->firstTickInButton = false;
@@ -152,6 +153,87 @@ void buttonTick(Button* button, TS_StateTypeDef* state) {
 	}
 }
 
+void upButtonTrigger(RectPlayer* player) {
+	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
+		player->levelPosY1 += 1;
+		player->levelPosY2 += 2;
+	} else if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 != player->levelPosY2) {
+		// lay up/down
+		int targetY;
+		if (player->levelPosY1 > player->levelPosY2) {
+			targetY = player->levelPosY1+1;
+		} else {
+			targetY = player->levelPosY2+1;
+		}
+		
+		player->levelPosY1 = targetY;
+		player->levelPosY2 = targetY;
+	} else if (player->levelPosY1 == player->levelPosY2) {
+		// lay left/right
+		player->levelPosY1 += 1;
+		player->levelPosY2 += 1;
+	}
+}
+
+void downButtonTrigger(RectPlayer* player) {
+		if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
+		player->levelPosY1 -= 1;
+		player->levelPosY2 -= 2;
+	} else if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 != player->levelPosY2) {
+		// lay up/down
+		if (player->levelPosY1 > player->levelPosY2) {
+			player->levelPosY1 -= 2;
+			player->levelPosY2 -= 1;
+		} else {
+			player->levelPosY1 -= 1;
+			player->levelPosY2 -= 2;
+		}
+	} else if (player->levelPosY1 == player->levelPosY2) {
+		// lay left/right
+		player->levelPosY1 -= 1;
+		player->levelPosY2 -= 1;
+	}
+}
+
+void leftButtonTrigger(RectPlayer* player) {
+	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
+		player->levelPosX1 -= 1;
+		player->levelPosX2 -= 2;
+	} else if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 != player->levelPosY2) {
+		// lay up/down
+		player->levelPosX1 -= 1;
+		player->levelPosX2 -= 1;
+	} else if (player->levelPosY1 == player->levelPosY2) {
+		// lay left/right
+		if (player->levelPosX1 < player->levelPosX2) {
+			player->levelPosX1 -= 1;
+			player->levelPosX2 -= 2;
+		} else {
+			player->levelPosX2 -= 1;
+			player->levelPosX1 -= 2;
+		}
+	}
+}
+
+void rightButtonTrigger(RectPlayer* player) {
+		if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
+		player->levelPosX1 += 1;
+		player->levelPosX2 += 2;
+	} else if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 != player->levelPosY2) {
+		// lay up/down
+		player->levelPosX1 += 1;
+		player->levelPosX2 += 1;
+	} else if (player->levelPosY1 == player->levelPosY2) {
+		// lay left/right
+		if (player->levelPosX1 < player->levelPosX2) {
+			player->levelPosX1 += 2;
+			player->levelPosX2 += 1;
+		} else {
+			player->levelPosX2 += 2;
+			player->levelPosX1 += 1;
+		}
+	}
+}
 
 void play() {
 	Buffer* buffer = createBuffer();
@@ -162,10 +244,10 @@ void play() {
 	Button leftButton = {.x0=0, .y0=LCD_Height/2-BUTTON_WIDTH/2, .wX=BUTTON_HEIGHT, .wY=BUTTON_WIDTH};
 	Button rightButton = {.x0=LCD_Width-BUTTON_HEIGHT, .y0=LCD_Height/2-BUTTON_WIDTH/2, .wX=BUTTON_HEIGHT, .wY=BUTTON_WIDTH};
 	
-	initButton(&upButton);
-	initButton(&downButton);
-	initButton(&leftButton);
-	initButton(&rightButton);
+	initButton(&upButton, upButtonTrigger);
+	initButton(&downButton, downButtonTrigger);
+	initButton(&leftButton, leftButtonTrigger);
+	initButton(&rightButton, rightButtonTrigger);
 	
 	RectPlayer player;
 	initPlayer(&player, 0, 0);
@@ -178,15 +260,15 @@ void play() {
 	int touchY;
 	while (1) {
 		TS_GetState(&tsState);
-		worldRotZ += 1;
+		worldRotZ = 10;
 		clearBuffer(BLACK, buffer, NULL);
 		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
 		projectLevelToBuffer(level, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
 		
-		buttonTick(&upButton, &tsState);
-		buttonTick(&downButton, &tsState);
-		buttonTick(&leftButton, &tsState);
-		buttonTick(&rightButton, &tsState);
+		buttonTick(&upButton, &tsState, &player);
+		buttonTick(&downButton, &tsState, &player);
+		buttonTick(&leftButton, &tsState, &player);
+		buttonTick(&rightButton, &tsState, &player);
 		
 		buttonToBuffer(&upButton, buffer);
 		buttonToBuffer(&downButton, buffer);

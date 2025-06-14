@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include "dctimegl.h"
 #include "touch_module.h"
-
+#include "playerRect.h"
 
 #define FLOOR_WIDTH 15
 #define FLOOR_HEIGHT 8
@@ -13,6 +13,8 @@
 #define BUTTON_HEIGHT 30
 
 #define M_PI 3.14159265358979323846
+
+struct RectPlayer;
 	
 typedef struct Level {
 	// 15*8
@@ -38,7 +40,8 @@ typedef struct Button {
 	int lastTouchY;
 	// public
 	bool isHolding;
-	bool triggered; 
+	bool triggered;
+	void (*triggerFunc)(struct RectPlayer*);
 } Button;
 
 void play();

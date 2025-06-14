@@ -85,7 +85,7 @@ void initPlayer(RectPlayer* player, int startLocX, int startLocY) {
 	player->levelPosY1 = 0;
 	// direction of the laydown
 	player->levelPosX2 = 0;
-	player->levelPosY2 = 1;
+	player->levelPosY2 = 0;
 	
 	
 	uint8_t modelPlayer[8][3] = {
