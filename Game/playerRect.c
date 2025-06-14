@@ -2,32 +2,64 @@
 #include "dctimegl.h"
 #include "stm324xg_lcd_sklin.h"
 
-void standToLayLeft(RectPlayer* player, Matrix** translatedMatrixXY, double degree) {
-		Matrix* laydownMatrixY = rotateMatrixAxisY(player->modelMatrix, -degree/360*2.0*M_PI);
+void standToLayLeft(RectPlayer* player, Matrix** translatedMatrixXY) {
+		Matrix* laydownMatrixY = rotateMatrixAxisY(player->modelMatrix, -(90-player->aniAngleProcess)/360.0*2.0*M_PI);
 		*translatedMatrixXY = translateMatrix(laydownMatrixY, player->levelPosX1+1, player->levelPosY1, 0);
 		free_matrix(laydownMatrixY);
 }
 
-void standToLayRight(RectPlayer* player, Matrix** translatedMatrixXY, double degree) {
+void layLeftToStand(RectPlayer* player, Matrix** translatedMatrixXY) {
+	Matrix* laydownMatrixY = rotateMatrixAxisY(player->modelMatrix, -(player->aniAngleProcess)/360.0*2.0*M_PI);
+	*translatedMatrixXY = translateMatrix(laydownMatrixY, player->levelPosX1, player->levelPosY1, 0);
+	free_matrix(laydownMatrixY);
+}
+
+void standToLayRight(RectPlayer* player, Matrix** translatedMatrixXY) {
 		Matrix* tempMoveX = translateMatrix(player->modelMatrix, -1, 0, 0);
-		Matrix* laydownMatrixY = rotateMatrixAxisY(tempMoveX, degree/360.0*2.0*M_PI);
+		Matrix* laydownMatrixY = rotateMatrixAxisY(tempMoveX, (90-player->aniAngleProcess)/360.0*2.0*M_PI);
 		free_matrix(tempMoveX);
 		*translatedMatrixXY = translateMatrix(laydownMatrixY, player->levelPosX1, player->levelPosY1, 0);
 		free_matrix(laydownMatrixY);
 }
 
-void standToLayDown(RectPlayer* player, Matrix** translatedMatrixXY, double degree) {
-		Matrix* laydownMatrixX = rotateMatrixAxisX(player->modelMatrix, degree/360.0*2.0*M_PI);
+void layRightToStand(RectPlayer* player, Matrix** translatedMatrixXY) {
+	Matrix* tempMoveX = translateMatrix(player->modelMatrix, -1, 0, 0);
+	Matrix* laydownMatrixY = rotateMatrixAxisY(tempMoveX, (player->aniAngleProcess)/360.0*2.0*M_PI);
+	free_matrix(tempMoveX);
+	Matrix* tempMoveX2 = translateMatrix(laydownMatrixY, 1, 0, 0);
+	free_matrix(laydownMatrixY);
+	*translatedMatrixXY = translateMatrix(tempMoveX2, player->levelPosX1, player->levelPosY1, 0);
+	free_matrix(tempMoveX2);
+}
+
+void standToLayDown(RectPlayer* player, Matrix** translatedMatrixXY) {
+		Matrix* laydownMatrixX = rotateMatrixAxisX(player->modelMatrix, (90-player->aniAngleProcess)/360.0*2.0*M_PI);
 		*translatedMatrixXY = translateMatrix(laydownMatrixX, player->levelPosX1, player->levelPosY1+1, 0);
 		free_matrix(laydownMatrixX);
 }
 
-void standToLayUp(RectPlayer* player, Matrix** translatedMatrixXY, double degree) {
+void layDownToStand(RectPlayer* player, Matrix** translatedMatrixXY) {
+	Matrix* laydownMatrixX = rotateMatrixAxisX(player->modelMatrix, (player->aniAngleProcess)/360.0*2.0*M_PI);
+	*translatedMatrixXY = translateMatrix(laydownMatrixX, player->levelPosX1, player->levelPosY1, 0);
+	free_matrix(laydownMatrixX);
+}
+
+void standToLayUp(RectPlayer* player, Matrix** translatedMatrixXY) {
 		Matrix* tempMoveY = translateMatrix(player->modelMatrix, 0, -1, 0);
-		Matrix* laydownMatrixX = rotateMatrixAxisX(tempMoveY, -degree/360.0*2.0*M_PI);
+		Matrix* laydownMatrixX = rotateMatrixAxisX(tempMoveY, -(90-player->aniAngleProcess)/360.0*2.0*M_PI);
 		free_matrix(tempMoveY);
 		*translatedMatrixXY = translateMatrix(laydownMatrixX, player->levelPosX1, player->levelPosY1, 0);
 		free_matrix(laydownMatrixX);
+}
+
+void layUpToStand(RectPlayer* player, Matrix** translatedMatrixXY) {
+	Matrix* tempMoveY = translateMatrix(player->modelMatrix, 0, -1, 0);
+	Matrix* laydownMatrixX = rotateMatrixAxisX(tempMoveY, -(player->aniAngleProcess)/360.0*2.0*M_PI);
+	free_matrix(tempMoveY);
+	Matrix* tempMoveY2 = translateMatrix(laydownMatrixX, 0, 1, 0);
+	free_matrix(laydownMatrixX);
+	*translatedMatrixXY = translateMatrix(tempMoveY2, player->levelPosX1, player->levelPosY1, 0);
+	free_matrix(tempMoveY2);
 }
 
 void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
@@ -35,19 +67,25 @@ void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale,
 	Matrix* translatedMatrixXY;
 	
 	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) { // stand still
-//		if (player->lastControl == UP) {
-//			standToLayDown(player, translatedMatrixXY, player->aniAngleProcess);
-//		} else {
+		if (player->lastControl == RIGHT) {
+			layLeftToStand(player, &translatedMatrixXY);
+		} else if (player->lastControl == LEFT) {
+			layRightToStand(player, &translatedMatrixXY);
+		} else if (player->lastControl == UP) {
+			layDownToStand(player, &translatedMatrixXY);
+		} else if (player->lastControl == DOWN) {
+			layUpToStand(player, &translatedMatrixXY);
+		} else {
 			translatedMatrixXY = translateMatrix(player->modelMatrix, player->levelPosX1, player->levelPosY1, 0);
-//		}
+		}
 	} else if (player->levelPosX1 > player->levelPosX2) { // left flip 0, 0, -1, 0
-		standToLayLeft(player, &translatedMatrixXY, 90);
+		standToLayLeft(player, &translatedMatrixXY);
 	} else if (player->levelPosX1 < player->levelPosX2) { // right flip 0, 0, 1, 0
-		standToLayRight(player, &translatedMatrixXY, 90);
+		standToLayRight(player, &translatedMatrixXY);
 	} else if (player->levelPosY1 > player->levelPosY2) { // 0, 0, 0, -1 down flip
-		standToLayDown(player, &translatedMatrixXY, 90);
+		standToLayDown(player, &translatedMatrixXY);
 	} else if (player->levelPosY1 < player->levelPosY2) { // 0, 0, 0, 1 up flip
-		standToLayUp(player, &translatedMatrixXY, 90);
+		standToLayUp(player, &translatedMatrixXY);
 	}
 	
 	Matrix* scaledMatrix = scaleMatrix(translatedMatrixXY, scale, scale, scale);
