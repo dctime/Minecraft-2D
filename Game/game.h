@@ -22,7 +22,6 @@ typedef struct Level {
 	uint8_t midX;
 	uint8_t midY;
 	Matrix* floorMatrix; // stores render 3d coords
-	
 } Level;
 
 typedef struct WorldLoc {

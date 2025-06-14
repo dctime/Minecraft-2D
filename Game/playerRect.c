@@ -2,33 +2,52 @@
 #include "dctimegl.h"
 #include "stm324xg_lcd_sklin.h"
 
+void standToLayLeft(RectPlayer* player, Matrix** translatedMatrixXY, double degree) {
+		Matrix* laydownMatrixY = rotateMatrixAxisY(player->modelMatrix, -degree/360*2.0*M_PI);
+		*translatedMatrixXY = translateMatrix(laydownMatrixY, player->levelPosX1+1, player->levelPosY1, 0);
+		free_matrix(laydownMatrixY);
+}
+
+void standToLayRight(RectPlayer* player, Matrix** translatedMatrixXY, double degree) {
+		Matrix* tempMoveX = translateMatrix(player->modelMatrix, -1, 0, 0);
+		Matrix* laydownMatrixY = rotateMatrixAxisY(tempMoveX, degree/360.0*2.0*M_PI);
+		free_matrix(tempMoveX);
+		*translatedMatrixXY = translateMatrix(laydownMatrixY, player->levelPosX1, player->levelPosY1, 0);
+		free_matrix(laydownMatrixY);
+}
+
+void standToLayDown(RectPlayer* player, Matrix** translatedMatrixXY, double degree) {
+		Matrix* laydownMatrixX = rotateMatrixAxisX(player->modelMatrix, degree/360.0*2.0*M_PI);
+		*translatedMatrixXY = translateMatrix(laydownMatrixX, player->levelPosX1, player->levelPosY1+1, 0);
+		free_matrix(laydownMatrixX);
+}
+
+void standToLayUp(RectPlayer* player, Matrix** translatedMatrixXY, double degree) {
+		Matrix* tempMoveY = translateMatrix(player->modelMatrix, 0, -1, 0);
+		Matrix* laydownMatrixX = rotateMatrixAxisX(tempMoveY, -degree/360.0*2.0*M_PI);
+		free_matrix(tempMoveY);
+		*translatedMatrixXY = translateMatrix(laydownMatrixX, player->levelPosX1, player->levelPosY1, 0);
+		free_matrix(laydownMatrixX);
+}
+
 void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	// level screen coord must be freed first
 	Matrix* translatedMatrixXY;
 	
-	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
-		translatedMatrixXY = translateMatrix(player->modelMatrix, player->levelPosX1, player->levelPosY1, 0);
-
+	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) { // stand still
+//		if (player->lastControl == UP) {
+//			standToLayDown(player, translatedMatrixXY, player->aniAngleProcess);
+//		} else {
+			translatedMatrixXY = translateMatrix(player->modelMatrix, player->levelPosX1, player->levelPosY1, 0);
+//		}
 	} else if (player->levelPosX1 > player->levelPosX2) { // left flip 0, 0, -1, 0
-		Matrix* laydownMatrixY = rotateMatrixAxisY(player->modelMatrix, -90.0/360*2.0*M_PI);
-		translatedMatrixXY = translateMatrix(laydownMatrixY, player->levelPosX1+1, player->levelPosY1, 0);
-		free_matrix(laydownMatrixY);
+		standToLayLeft(player, &translatedMatrixXY, 90);
 	} else if (player->levelPosX1 < player->levelPosX2) { // right flip 0, 0, 1, 0
-		Matrix* tempMoveX = translateMatrix(player->modelMatrix, -1, 0, 0);
-		Matrix* laydownMatrixY = rotateMatrixAxisY(tempMoveX, 90.0/360.0*2.0*M_PI);
-		free_matrix(tempMoveX);
-		translatedMatrixXY = translateMatrix(laydownMatrixY, player->levelPosX1, player->levelPosY1, 0);
-		free_matrix(laydownMatrixY);
+		standToLayRight(player, &translatedMatrixXY, 90);
 	} else if (player->levelPosY1 > player->levelPosY2) { // 0, 0, 0, -1 down flip
-		Matrix* laydownMatrixX = rotateMatrixAxisX(player->modelMatrix, 90.0/360.0*2.0*M_PI);
-		translatedMatrixXY = translateMatrix(laydownMatrixX, player->levelPosX1, player->levelPosY1+1, 0);
-		free_matrix(laydownMatrixX);
+		standToLayDown(player, &translatedMatrixXY, 90);
 	} else if (player->levelPosY1 < player->levelPosY2) { // 0, 0, 0, 1 up flip
-		Matrix* tempMoveY = translateMatrix(player->modelMatrix, 0, -1, 0);
-		Matrix* laydownMatrixX = rotateMatrixAxisX(tempMoveY, -90.0/360.0*2.0*M_PI);
-		free_matrix(tempMoveY);
-		translatedMatrixXY = translateMatrix(laydownMatrixX, player->levelPosX1, player->levelPosY1, 0);
-		free_matrix(laydownMatrixX);
+		standToLayUp(player, &translatedMatrixXY, 90);
 	}
 	
 	Matrix* scaledMatrix = scaleMatrix(translatedMatrixXY, scale, scale, scale);
@@ -52,6 +71,15 @@ void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale,
 	}
 	
 	uint16_t color = LCD_COLOR_GREEN;
+	if (player->lastControl == UP) {
+		color = RED;
+	} else if (player->lastControl == DOWN) {
+		color = GREEN;
+	} else if (player->lastControl == LEFT) {
+		color = YELLOW;
+	} else if (player->lastControl == RIGHT) {
+		color = BLUE;
+	}
 	
 	for (int pointIndex = 0; pointIndex < 3; pointIndex++) {
 		// LCD_DrawLine(coords[pointIndex].x, coords[pointIndex].y, coords[pointIndex+1].x, coords[pointIndex+1].y);
@@ -74,6 +102,7 @@ void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale,
 	}
 	
 	free_matrix(projectedMatrix);
+	if (player->aniAngleProcess > 0) player->aniAngleProcess -= 1;
 }
 
 void initPlayer(RectPlayer* player, int startLocX, int startLocY) {
@@ -81,6 +110,9 @@ void initPlayer(RectPlayer* player, int startLocX, int startLocY) {
 	if (player->modelMatrix == NULL) {
 		while(1);
 	}
+	
+	player->aniAngleProcess = 0;
+	player->lastControl = UP;
 	player->levelPosX1 = 0;
 	player->levelPosY1 = 0;
 	// direction of the laydown

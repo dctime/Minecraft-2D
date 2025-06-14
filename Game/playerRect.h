@@ -5,6 +5,9 @@
 #include "game.h"
 #define PLAYERRECTPOINTNUM 8
 
+enum PlayerLastControl {
+	UP, DOWN, LEFT, RIGHT
+};
 
 typedef struct RectPlayer {
 	Matrix* modelMatrix;
@@ -12,6 +15,8 @@ typedef struct RectPlayer {
 	int levelPosY1;
 	int levelPosX2;
 	int levelPosY2;
+	int aniAngleProcess; // 0 <- 90
+	enum PlayerLastControl lastControl;
 } RectPlayer;
 
 void initPlayer(RectPlayer* player, int startLocX, int startLocY);

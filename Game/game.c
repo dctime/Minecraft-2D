@@ -145,6 +145,7 @@ void buttonTick(Button* button, TS_StateTypeDef* state, RectPlayer* player) {
 		if (button->firstTickInButton) {
 			if (inRect(button->lastTouchX, button->lastTouchY, button->x0, button->y0, button->wX, button->wY)) {
 				button->triggerFunc(player);
+				player->aniAngleProcess = 90;
 				button->triggered = true;
 			}
 			button->firstTickInButton = false;
@@ -154,6 +155,7 @@ void buttonTick(Button* button, TS_StateTypeDef* state, RectPlayer* player) {
 }
 
 void upButtonTrigger(RectPlayer* player) {
+	player->lastControl = UP;
 	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
 		player->levelPosY1 += 1;
 		player->levelPosY2 += 2;
@@ -176,7 +178,8 @@ void upButtonTrigger(RectPlayer* player) {
 }
 
 void downButtonTrigger(RectPlayer* player) {
-		if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
+	player->lastControl = DOWN;
+	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
 		player->levelPosY1 -= 1;
 		player->levelPosY2 -= 2;
 	} else if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 != player->levelPosY2) {
@@ -196,6 +199,7 @@ void downButtonTrigger(RectPlayer* player) {
 }
 
 void leftButtonTrigger(RectPlayer* player) {
+	player->lastControl = LEFT;
 	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
 		player->levelPosX1 -= 1;
 		player->levelPosX2 -= 2;
@@ -216,7 +220,8 @@ void leftButtonTrigger(RectPlayer* player) {
 }
 
 void rightButtonTrigger(RectPlayer* player) {
-		if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
+	player->lastControl = RIGHT;
+	if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 == player->levelPosY2) {
 		player->levelPosX1 += 1;
 		player->levelPosX2 += 2;
 	} else if (player->levelPosX1 == player->levelPosX2 && player->levelPosY1 != player->levelPosY2) {
