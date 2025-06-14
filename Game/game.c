@@ -265,7 +265,7 @@ void play() {
 	int touchY;
 	while (1) {
 		TS_GetState(&tsState);
-		worldRotZ = 10;
+		worldRotZ = 30;
 		clearBuffer(BLACK, buffer, NULL);
 		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
 		projectLevelToBuffer(level, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
