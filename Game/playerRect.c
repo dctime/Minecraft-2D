@@ -221,7 +221,8 @@ void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale,
 	}
 	
 	free_matrix(projectedMatrix);
-	if (player->aniAngleProcess > 0) player->aniAngleProcess -= 1;
+	player->aniAngleProcess -= 2;
+	if (player->aniAngleProcess < 0) player->aniAngleProcess = 0;
 }
 
 void initPlayer(RectPlayer* player, int startLocX, int startLocY) {

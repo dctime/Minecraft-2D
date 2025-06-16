@@ -7,13 +7,13 @@
 static TS_StateTypeDef tsState;
 
 void generateLevel1(Level* level) {
-	bool temp[FLOOR_HEIGHT][FLOOR_WIDTH] = {
+	uint16_t temp[FLOOR_HEIGHT][FLOOR_WIDTH] = {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
 		{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
 		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
 		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	};
@@ -24,7 +24,7 @@ void generateLevel1(Level* level) {
 		}
 	}
 	
-	float temp2[LEVEL1POINTSNUM][LEVEL1POINTSNUM] = {
+	float temp2[LEVEL1POINTSNUM][2] = {
 		{-5, 3},
 		{-2, 3},
 		{-2, 2},
@@ -53,9 +53,25 @@ void generateLevel1(Level* level) {
 		level->floorMatrix->data[level->floorMatrix->cols*2+pointIndex] = 0;
 		level->floorMatrix->data[level->floorMatrix->cols*3+pointIndex] = 1;
 	}
+	
+	float tempGoalVec[GOALPOINTSNUM][2] = {
+		{2, -1},
+		{3, -1},
+		{3, -2},
+		{2, -2}
+	};
+	
+	level->goalMatrix = create_matrix(4, GOALPOINTSNUM);
+	for (int i = 0; i < GOALPOINTSNUM; i++) {
+		level->goalMatrix->data[level->goalMatrix->cols*0+i] = tempGoalVec[i][0];
+		level->goalMatrix->data[level->goalMatrix->cols*1+i] = tempGoalVec[i][1];
+		level->goalMatrix->data[level->goalMatrix->cols*2+i] = 0;
+		level->goalMatrix->data[level->goalMatrix->cols*3+i] = 1;
+	}
 }
 
 int getLevelTile(Level* level, int x, int y) {
+	// debugText(level->floor[-y+3][x+8]);
 	return level->floor[-y+3][x+8];
 }
 
@@ -65,6 +81,12 @@ bool posValid(Level* level, int x1, int x2, int y1, int y2) {
 	return true;
 }
 
+bool posWinning(Level* level, int x1, int x2, int y1, int y2) {
+	if (getLevelTile(level, x1, y1) == 2 && getLevelTile(level, x2, y2) == 2) return true;
+	// debugText(-1);
+	return false;
+}
+
 Level* initLevel() {
 	Level* level = (struct Level* ) malloc(sizeof(struct Level));
 	return level;
@@ -72,6 +94,38 @@ Level* initLevel() {
 
 void freeLevel(Level* level) {
 	free(level);
+}
+
+void projectGoalToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	Matrix* scaledMatrix = scaleMatrix(level->goalMatrix, scale, scale, scale);
+	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
+	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
+	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
+	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
+	processProjectedMatrix(projectedMatrix);
+	
+	free_matrix(scaledMatrix);
+	free_matrix(rotatedMatrixAxisX);
+	free_matrix(rotatedMatrixAxisZ);
+	free_matrix(translatedMatrix);
+	
+	ScreenCoord coords[GOALPOINTSNUM];
+	
+	for (int i = 0; i < GOALPOINTSNUM; i++) {
+		struct ScreenCoord coord = getCoordFromMatrix(i, LCD_Width, LCD_Height, projectedMatrix);
+		coords[i] = coord;
+	}
+	
+	for (int pointIndex = 0; pointIndex < GOALPOINTSNUM-1; pointIndex++) {
+		Buffer_DrawLine(coords[pointIndex].x, coords[pointIndex].y, coords[pointIndex+1].x, coords[pointIndex+1].y, buffer, LCD_COLOR_DARKMAGENTA);
+		// LCD_DrawLine(coords[pointIndex].x, coords[pointIndex].y, coords[pointIndex+1].x, coords[pointIndex+1].y);
+	}
+	
+	Buffer_DrawLine(coords[0].x, coords[0].y, coords[3].x, coords[3].y, buffer, LCD_COLOR_DARKMAGENTA);
+	Buffer_DrawLine(coords[0].x, coords[0].y, coords[2].x, coords[2].y, buffer, LCD_COLOR_DARKMAGENTA);
+	Buffer_DrawLine(coords[1].x, coords[1].y, coords[3].x, coords[3].y, buffer, LCD_COLOR_DARKMAGENTA);
+	
+	free_matrix(projectedMatrix);
 }
 
 void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
@@ -289,6 +343,30 @@ void rightButtonTrigger(RectPlayer* player, Level* level) {
 	}
 }
 
+bool checkWinning(Level* level, RectPlayer* player) {
+	if (player->aniAngleProcess != 0) return false;
+//	debugText(player->levelPosX1);
+//	debugText(player->levelPosX2);
+//	debugText(player->levelPosY1);
+//	debugText(player->levelPosY2);
+	if (posWinning(level, player->levelPosX1, player->levelPosX2, player->levelPosY1, player->levelPosY2)) return true;
+	return false;
+}
+
+void youWinScreen() {
+	LCD_Clear(BLACK);
+	char c[10] = "YOU WIN!";
+	LCD_SaveFont();
+	LCD_SaveColors();
+	LCD_SetFont(&Font16);	
+	LCD_SetColors(WHITE, BLACK); // Text = red; back = white
+	LCD_DisplayStringLineCol(6, 10, c);
+	LCD_RestoreColors();
+	LCD_RestoreFont();
+	
+	while(1);
+}
+
 void play() {
 	Buffer* buffer = createBuffer();
 	Level* level = initLevel();
@@ -316,14 +394,21 @@ void play() {
 		TS_GetState(&tsState);
 		worldRotZ = 30;
 		
+		if (checkWinning(level, &player)) {
+			youWinScreen();
+		}
+		
 		buttonTick(&upButton, &tsState, &player, level);
 		buttonTick(&downButton, &tsState, &player, level);
 		buttonTick(&leftButton, &tsState, &player, level);
 		buttonTick(&rightButton, &tsState, &player, level);
 		
 		clearBuffer(BLACK, buffer, NULL);
-		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
+		
+		
 		projectLevelToBuffer(level, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
+		projectGoalToBuffer(level, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
+		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
 		
 		buttonToBuffer(&upButton, buffer);
 		buttonToBuffer(&downButton, buffer);

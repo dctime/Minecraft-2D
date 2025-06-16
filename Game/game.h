@@ -8,6 +8,7 @@
 #define FLOOR_WIDTH 15
 #define FLOOR_HEIGHT 8
 #define LEVEL1POINTSNUM 19
+#define GOALPOINTSNUM 4
 
 #define BUTTON_WIDTH 60
 #define BUTTON_HEIGHT 30
@@ -22,6 +23,7 @@ typedef struct Level {
 	uint8_t midX;
 	uint8_t midY;
 	Matrix* floorMatrix; // stores render 3d coords
+	Matrix* goalMatrix; 
 } Level;
 
 

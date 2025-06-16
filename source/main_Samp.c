@@ -73,9 +73,6 @@ startup:
 
 	#define JPG_fileAddress	0x08020000
 	
-
-
-	
 	LCD_SetTextColor(LCD_COLOR_GREEN);
 	LCD_FillRect(0, 0, LCD_Width-10, LCD_Height-10);
 	
