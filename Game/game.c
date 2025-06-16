@@ -353,6 +353,8 @@ bool checkWinning(Level* level, RectPlayer* player) {
 	return false;
 }
 
+volatile static bool gameReset;
+
 void youWinScreen() {
 	LCD_Clear(BLACK);
 	char c[10] = "YOU WIN!";
@@ -364,7 +366,17 @@ void youWinScreen() {
 	LCD_RestoreColors();
 	LCD_RestoreFont();
 	
-	while(1);
+		while(!gameReset)
+			continue;
+}
+
+volatile static bool gameReset = 0;
+
+void EXTI0_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR0) {  // ??? EXTI0 ???
+        EXTI->PR = EXTI_PR_PR0;    // ??????
+				gameReset = 1;
+    }
 }
 
 void play() {
@@ -390,12 +402,13 @@ void play() {
 	double worldRotZ = 0;
 	int touchX;
 	int touchY;
-	while (1) {
+	while (!gameReset) {
 		TS_GetState(&tsState);
 		worldRotZ = 30;
 		
 		if (checkWinning(level, &player)) {
 			youWinScreen();
+			break;
 		}
 		
 		buttonTick(&upButton, &tsState, &player, level);
@@ -420,5 +433,8 @@ void play() {
 
 	freeLevel(level);
 	freeBuffer(buffer);
+	gameReset = 0;
 }
+
+
 	

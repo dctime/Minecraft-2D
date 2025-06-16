@@ -255,31 +255,31 @@ uint32_t HoldRequestTime;
   * @param  None
   * @retval : None
   */
-void EXTI0_IRQHandler(void)
-{
-	//---- For PA0 -----
-  if( (EXTI->PR & Bit(0)) == 0) return;
-  
- 	  handle_EXTI_ISR(0, 1);		// Line No. = 0; debState = 1
-   
-	if (trig_status & TRIGGER)		// have been asking long-hold-button
-	{
-    //--  task for pressing PA0=1  --/
-		if ((GPIOA->IDR & Bit(0)) == 1)  // normally low
-		{
-			trig_status |= PRESS;
-//			GPIOx_OUTPUT_setPINS(LEDport, LEDpin);  // Turn on LED pin
-		}else	 
-    //--  task for releasing PA0=0  --/
-		{
-			if (trig_status & PRESS){  
-				trig_status = TRIGGER;
-				MyCounts = HoldRequestTime;
-			}
-//			GPIOx_OUTPUT_resetPINS(LEDport, LEDpin);  // Turn off LED pin
-		}
-	}		
-}
+//void EXTI0_IRQHandler(void)
+//{
+//	//---- For PA0 -----
+//  if( (EXTI->PR & Bit(0)) == 0) return;
+//  
+// 	  handle_EXTI_ISR(0, 1);		// Line No. = 0; debState = 1
+//   
+//	if (trig_status & TRIGGER)		// have been asking long-hold-button
+//	{
+//    //--  task for pressing PA0=1  --/
+//		if ((GPIOA->IDR & Bit(0)) == 1)  // normally low
+//		{
+//			trig_status |= PRESS;
+////			GPIOx_OUTPUT_setPINS(LEDport, LEDpin);  // Turn on LED pin
+//		}else	 
+//    //--  task for releasing PA0=0  --/
+//		{
+//			if (trig_status & PRESS){  
+//				trig_status = TRIGGER;
+//				MyCounts = HoldRequestTime;
+//			}
+////			GPIOx_OUTPUT_resetPINS(LEDport, LEDpin);  // Turn off LED pin
+//		}
+//	}		
+//}
 
 
 

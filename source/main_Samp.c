@@ -29,6 +29,19 @@ void Touch_sample_Sine(void);
 void Touch_sample_Hit(void);
 void Sample_alarmA(void);
 
+void resetButton1Setup() {
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;    // GPIOA
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;   // SYSCFG
+	
+	GPIOA->MODER &= ~(3 << (0 * 2));  // MODER0[1:0] = 00 = input mode
+	SYSCFG->EXTICR[0] &= ~SYSCFG_EXTICR1_EXTI0;  // ? PA0
+	
+	EXTI->IMR  |= EXTI_IMR_IM0;     // ?? EXTI0 ?????
+	EXTI->FTSR |= EXTI_FTSR_TR0;    // ?????????(? 1 ? 0,??????)
+	
+	NVIC_EnableIRQ(EXTI0_IRQn);  // ?? EXTI0 ????
+}
+
 
 
 /**
@@ -51,35 +64,39 @@ int main(void)
 	/* Initialize the Touch module */
 	Default_Calibration();
 	Driver_GPIO();
+	
+	resetButton1Setup();
 
 	
 //	Touchscreen_Calibration();
 
-startup:
-	while(GPIOA->IDR & 0x01)			// wait until release KEY1
-    delay_ms(20);						// wait 20 msec for debouncing
+//startup:
+//	while(GPIOA->IDR & 0x01)			// wait until release KEY1
+//    delay_ms(20);						// wait 20 msec for debouncing
 
-	LCD_SetFont(&Font20);
-	LCD_SetColors(RED, BLUE);
-	LCD_DisplayStringAt(36, 140, (char*)" Press KEY1   ", LEFT_MODE);
-	LCD_DisplayStringAt(36, 160, (char*)" then Release ", LEFT_MODE);
+//	LCD_SetFont(&Font20);
+//	LCD_SetColors(RED, BLUE);
+//	LCD_DisplayStringAt(36, 140, (char*)" Press KEY1   ", LEFT_MODE);
+//	LCD_DisplayStringAt(36, 160, (char*)" then Release ", LEFT_MODE);
 
-//=================
-	Wait_PressPA0(KEY_TIME);	
-	while(GPIOA->IDR & Bit(0));			// wait until release KEY1
-//====================================
-	
-	LCD_Clear(LCD_COLOR_LIGHTBLUE);
+////=================
+//	Wait_PressPA0(KEY_TIME);	
+//	while(GPIOA->IDR & Bit(0));			// wait until release KEY1
+////====================================
+//	
+//	LCD_Clear(LCD_COLOR_LIGHTBLUE);
 
-	#define JPG_fileAddress	0x08020000
-	
-	LCD_SetTextColor(LCD_COLOR_GREEN);
-	LCD_FillRect(0, 0, LCD_Width-10, LCD_Height-10);
-	
-	uint8_t res;
-	res = LCD_DrawJPG(0, 0, (uint8_t *) JPG_fileAddress, 100, 100);
-	
-	play();
+//	#define JPG_fileAddress	0x08020000
+//	
+//	LCD_SetTextColor(LCD_COLOR_GREEN);
+//	LCD_FillRect(0, 0, LCD_Width-10, LCD_Height-10);
+//	
+//	uint8_t res;
+//	res = LCD_DrawJPG(0, 0, (uint8_t *) JPG_fileAddress, 100, 100);
+//	
+	while(1) {
+		play();
+	}
 
 	#define POINTS_NUM 48
 	
@@ -186,20 +203,20 @@ startup:
 	free_matrix(cube);
 	freeBuffer(buffer);
 	
-	#define JPG_OK 0
-	if (res != JPG_OK)
-	{
-		LCD_SetTextColor(YELLOW);
-		LCD_SaveFont();
-		LCD_SetFont(&Font16);
-		LCD_DisplayStringAt(5, 100, get_JPG_error_code(),  LEFT_MODE);
-		LCD_RestoreFont();
-		while(1);
-	}
-		
-		// LCD_DrawJPG(0, 0, (uint8_t *) JPG_fileAddress, 100, 100);
-	while(1);
-	goto startup;
+//	#define JPG_OK 0
+//	if (res != JPG_OK)
+//	{
+//		LCD_SetTextColor(YELLOW);
+//		LCD_SaveFont();
+//		LCD_SetFont(&Font16);
+//		LCD_DisplayStringAt(5, 100, get_JPG_error_code(),  LEFT_MODE);
+//		LCD_RestoreFont();
+//		while(1);
+//	}
+//		
+//		// LCD_DrawJPG(0, 0, (uint8_t *) JPG_fileAddress, 100, 100);
+//	while(1);
+//	goto startup;
 }
 
 
