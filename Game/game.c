@@ -7,6 +7,39 @@
 static TS_StateTypeDef tsState;
 
 
+void projectLevelButtonToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	Matrix* scaledMatrix = scaleMatrix(level->buttons->levelButtonMatrix, scale, scale, scale);
+	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
+	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
+	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
+	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
+	processProjectedMatrix(projectedMatrix);
+	
+	free_matrix(scaledMatrix);
+	free_matrix(rotatedMatrixAxisX);
+	free_matrix(rotatedMatrixAxisZ);
+	free_matrix(translatedMatrix);
+	
+//	debugText(level->buttonCount);
+	
+	ScreenCoord* coords = malloc(sizeof(ScreenCoord) * level->buttonCount * 4);
+	
+	for (int i = 0; i < level->buttonCount*4; i++) {
+		*(coords+i) = getCoordFromMatrix(i, LCD_Width, LCD_Height, projectedMatrix);
+//		debugText((*(coords+i)).x);
+//		debugText((*(coords+i)).y);
+	}
+	// one button has 4 points
+	for (int buttonIndex = 0; buttonIndex < level->buttonCount; buttonIndex++) {
+//		LCD_DrawLine((coords+4*buttonIndex+0)->x, (coords+4*buttonIndex+0)->y, (coords+4*buttonIndex+2)->x, (coords+4*buttonIndex+2)->y);
+//		LCD_DrawLine((coords+4*buttonIndex+1)->x, (coords+4*buttonIndex+1)->y, (coords+4*buttonIndex+3)->x, (coords+4*buttonIndex+3)->y);
+		Buffer_DrawLine((coords+4*buttonIndex+0)->x, (coords+4*buttonIndex+0)->y, (coords+4*buttonIndex+2)->x, (coords+4*buttonIndex+2)->y, buffer, YELLOW);
+		Buffer_DrawLine((coords+4*buttonIndex+1)->x, (coords+4*buttonIndex+1)->y, (coords+4*buttonIndex+3)->x, (coords+4*buttonIndex+3)->y, buffer, YELLOW);
+	}
+	
+	free(coords);
+	free_matrix(projectedMatrix);
+}
 
 void projectGoalToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	Matrix* scaledMatrix = scaleMatrix(level->goalMatrix, scale, scale, scale);
@@ -407,6 +440,7 @@ void play() {
 		
 		projectLevelToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectGoalToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
+		projectLevelButtonToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		
 		buttonToBuffer(&upButton, buffer);
