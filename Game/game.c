@@ -6,95 +6,7 @@
 
 static TS_StateTypeDef tsState;
 
-void generateLevel1(Level* level) {
-	uint16_t temp[FLOOR_HEIGHT][FLOOR_WIDTH] = {
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
-		{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 2, 1, 1, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-	};
-	
-	for (int y = 0; y < FLOOR_HEIGHT; y++) {
-		for (int x = 0; x < FLOOR_WIDTH; x++) {
-			level->floor[y][x] = temp[y][x];
-		}
-	}
-	
-	float temp2[LEVEL1POINTSNUM][2] = {
-		{-5, 3},
-		{-2, 3},
-		{-2, 2},
-		{1, 2},
-		{1, 1},
-		{4, 1},
-		{4, 0},
-		{5, 0},
-		{5, -2},
-		{4, -2},
-		{4, -3},
-		{1, -3},
-		{1, -2},
-		{0, -2},
-		{0, -1},
-		{-4, -1},
-		{-4, 0},
-		{-5, 0},
-		{-5, 3}
-	};
-	
-	level->floorMatrix = create_matrix(4, LEVEL1POINTSNUM);
-	for (int pointIndex = 0; pointIndex < LEVEL1POINTSNUM; pointIndex++) {
-		level->floorMatrix->data[level->floorMatrix->cols*0+pointIndex] = (temp2[pointIndex][0]);
-		level->floorMatrix->data[level->floorMatrix->cols*1+pointIndex] = (temp2[pointIndex][1]);
-		level->floorMatrix->data[level->floorMatrix->cols*2+pointIndex] = 0;
-		level->floorMatrix->data[level->floorMatrix->cols*3+pointIndex] = 1;
-	}
-	
-	float tempGoalVec[GOALPOINTSNUM][2] = {
-		{2, -1},
-		{3, -1},
-		{3, -2},
-		{2, -2}
-	};
-	
-	level->goalMatrix = create_matrix(4, GOALPOINTSNUM);
-	for (int i = 0; i < GOALPOINTSNUM; i++) {
-		level->goalMatrix->data[level->goalMatrix->cols*0+i] = tempGoalVec[i][0];
-		level->goalMatrix->data[level->goalMatrix->cols*1+i] = tempGoalVec[i][1];
-		level->goalMatrix->data[level->goalMatrix->cols*2+i] = 0;
-		level->goalMatrix->data[level->goalMatrix->cols*3+i] = 1;
-	}
-}
 
-int getLevelTile(Level* level, int x, int y) {
-	// debugText(level->floor[-y+3][x+8]);
-	return level->floor[-y+3][x+8];
-}
-
-bool posValid(Level* level, int x1, int x2, int y1, int y2) {
-	if (getLevelTile(level, x1, y1) == 0) return false;
-	if (getLevelTile(level, x2, y2) == 0) return false;
-	return true;
-}
-
-bool posWinning(Level* level, int x1, int x2, int y1, int y2) {
-	if (getLevelTile(level, x1, y1) == 2 && getLevelTile(level, x2, y2) == 2) return true;
-	// debugText(-1);
-	return false;
-}
-
-Level* initLevel() {
-	Level* level = (struct Level* ) malloc(sizeof(struct Level));
-	return level;
-}
-
-void freeLevel(Level* level) {
-	free(level);
-}
 
 void projectGoalToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	Matrix* scaledMatrix = scaleMatrix(level->goalMatrix, scale, scale, scale);
@@ -142,18 +54,18 @@ void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rot
 	free_matrix(rotatedMatrixAxisZ);
 	free_matrix(translatedMatrix);
 
-	
-	ScreenCoord coords[LEVEL1POINTSNUM];
+	ScreenCoord* coords = malloc(sizeof(ScreenCoord) * level->floorPointsNum);
 	
 	for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
 		struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
 		coords[columnIndex] = coord;
 	}
 	
-	for (int pointIndex = 0; pointIndex < LEVEL1POINTSNUM-1; pointIndex++) {
+	for (int pointIndex = 0; pointIndex < level->floorPointsNum-1; pointIndex++) {
 		Buffer_DrawLine(coords[pointIndex].x, coords[pointIndex].y, coords[pointIndex+1].x, coords[pointIndex+1].y, buffer, WHITE);
 	}
 	
+	free(coords);
 	free_matrix(projectedMatrix);
 }
 
@@ -469,7 +381,7 @@ void play() {
 	RectPlayer player;
 	initPlayer(&player, 0, 0);
 	
-	generateLevel1(level);
+	generateLevel2(level);
 	
 	double worldRotX = -60;
 	int touchX;

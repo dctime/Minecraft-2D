@@ -4,11 +4,9 @@
 #include "dctimegl.h"
 #include "touch_module.h"
 #include "playerRect.h"
+#include "level.h"
 
-#define FLOOR_WIDTH 15
-#define FLOOR_HEIGHT 8
-#define LEVEL1POINTSNUM 19
-#define GOALPOINTSNUM 4
+
 
 #define BUTTON_WIDTH 60
 #define BUTTON_HEIGHT 30
@@ -16,17 +14,6 @@
 #define M_PI 3.14159265358979323846
 
 struct RectPlayer;
-	
-typedef struct Level {
-	// 15*8
-	uint8_t floor[FLOOR_HEIGHT][FLOOR_WIDTH];
-	uint8_t midX;
-	uint8_t midY;
-	Matrix* floorMatrix; // stores render 3d coords
-	Matrix* goalMatrix; 
-} Level;
-
-
 
 typedef struct Button {
 	float x0, y0;

@@ -13,6 +13,7 @@
 ".\objects\rng.o"
 ".\objects\matrix.o"
 ".\objects\dctimegl.o"
+".\objects\level.o"
 ".\objects\game.o"
 ".\objects\playerrect.o"
 ".\objects\startup_stm32f407xx.o"
