@@ -42,6 +42,18 @@ typedef struct Button {
 	void (*triggerFunc)(struct RectPlayer*, struct Level*);
 } Button;
 
+typedef struct ScreenControlObject {
+		// private
+	bool isTouchingScreenLastTick;
+	bool firstTickOnScreen;
+	int lastTouchX;
+	int lastTouchY;
+	// public
+	bool isHolding;
+	bool triggered;
+	int screenRotZDeg;
+} ScreenControlObject;
+
 void play();
 
 Level* initLevel();

@@ -166,12 +166,23 @@ bool inRect(int touchX, int touchY, int x0, int y0, int deltaX, int deltaY) {
 	return false;
 }
 
+void initScreenControlObject(ScreenControlObject* object) {
+	object->firstTickOnScreen = false;
+	object->isTouchingScreenLastTick = false;
+	object->lastTouchX = -1;
+	object->lastTouchY = -1;
+	object->isHolding = false;
+	object->triggered = false;
+	object->screenRotZDeg = 30;
+}
+
 void initButton(Button* button, void (*triggerFunc)(RectPlayer*, Level*)) {
 	button->firstTickInButton = false;
 	button->isTouchingScreenLastTick = false;
 	button->lastTouchX = -1;
 	button->lastTouchY = -1;
 	button->isHolding = false;
+	button->triggered = false;
 	button->triggerFunc = triggerFunc;
 }
 
@@ -184,6 +195,60 @@ void buttonToBuffer(Button* button, Buffer* buffer) {
 		Buffer_FillRect(button->x0, button->y0, button->wX, button->wY, buffer, GRAY);
 	}
 	
+}
+
+void screenHolding(ScreenControlObject* object, int currentX, int currentY) {
+	if (object->lastTouchX == -1 || object->lastTouchY == -1) return;
+	int deltaX = currentX - object->lastTouchX;
+	object->screenRotZDeg += deltaX;
+}
+
+void screenControlTick(ScreenControlObject* object, TS_StateTypeDef* state, Button buttons[4]) {
+	object->triggered = false;
+	if (state->TouchDetected) {
+		int x = state->x;
+		int y = state->y;
+		
+		bool notInButton = true;
+		for (int buttonID = 0; buttonID < 4; buttonID++) {
+			Button* button = buttons+buttonID;
+			if (inRect(x, y, button->x0, button->y0, button->wX, button->wY)) notInButton = false;
+		}
+		
+		if (notInButton) {
+			if (!object->isTouchingScreenLastTick) {
+				object->firstTickOnScreen = true;
+				object->lastTouchX = -1;
+				object->lastTouchY = -1;
+			}
+		}
+		if (object->firstTickOnScreen) {
+			// holding func
+			object->isHolding = true;
+			// screen moving
+			screenHolding(object, x, y);
+			
+		}
+		object->isTouchingScreenLastTick = true;
+		object->lastTouchX = x;
+		object->lastTouchY = y;
+	} else {
+		object->isHolding = false;
+		if (object->firstTickOnScreen) {
+			bool notInButton = true;
+			for (int buttonID = 0; buttonID < 4; buttonID++) {
+				Button* button = buttons+buttonID;
+				if (inRect(button->lastTouchX, button->lastTouchY, button->x0, button->y0, button->wX, button->wY)) notInButton = false;
+			}
+			if (notInButton) {
+				object->triggered = true;
+			}
+			object->firstTickOnScreen = false;
+			object->lastTouchX = -1;
+			object->lastTouchY = -1;
+		}
+		object->isTouchingScreenLastTick = false;
+	}
 }
 
 void buttonTick(Button* button, TS_StateTypeDef* state, RectPlayer* player, Level* level) {
@@ -387,11 +452,19 @@ void play() {
 	Button downButton = {.x0=LCD_Width/2-BUTTON_WIDTH/2, .y0=LCD_Height-BUTTON_HEIGHT, .wX=BUTTON_WIDTH, .wY=BUTTON_HEIGHT};
 	Button leftButton = {.x0=0, .y0=LCD_Height/2-BUTTON_WIDTH/2, .wX=BUTTON_HEIGHT, .wY=BUTTON_WIDTH};
 	Button rightButton = {.x0=LCD_Width-BUTTON_HEIGHT, .y0=LCD_Height/2-BUTTON_WIDTH/2, .wX=BUTTON_HEIGHT, .wY=BUTTON_WIDTH};
+	Button buttons[4] = {
+		upButton,
+		downButton,
+		leftButton,
+		rightButton
+	};
+	ScreenControlObject screenControlObject;
 	
 	initButton(&upButton, upButtonTrigger);
 	initButton(&downButton, downButtonTrigger);
 	initButton(&leftButton, leftButtonTrigger);
 	initButton(&rightButton, rightButtonTrigger);
+	initScreenControlObject(&screenControlObject);
 	
 	RectPlayer player;
 	initPlayer(&player, 0, 0);
@@ -399,12 +472,10 @@ void play() {
 	generateLevel1(level);
 	
 	double worldRotX = -60;
-	double worldRotZ = 0;
 	int touchX;
 	int touchY;
 	while (!gameReset) {
 		TS_GetState(&tsState);
-		worldRotZ = 30;
 		
 		if (checkWinning(level, &player)) {
 			youWinScreen();
@@ -415,13 +486,16 @@ void play() {
 		buttonTick(&downButton, &tsState, &player, level);
 		buttonTick(&leftButton, &tsState, &player, level);
 		buttonTick(&rightButton, &tsState, &player, level);
+		screenControlTick(&screenControlObject, &tsState, buttons);
+		
+		// if not button holding
+		// x coord move 
 		
 		clearBuffer(BLACK, buffer, NULL);
 		
-		
-		projectLevelToBuffer(level, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
-		projectGoalToBuffer(level, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
-		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, worldRotZ, -8, 50, 0.1, 100.0);
+		projectLevelToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
+		projectGoalToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
+		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		
 		buttonToBuffer(&upButton, buffer);
 		buttonToBuffer(&downButton, buffer);
