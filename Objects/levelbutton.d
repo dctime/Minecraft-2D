@@ -1,5 +1,5 @@
-./objects/level.o: Game\level.c Game\level.h MatrixLib\matrix.h \
-  MatrixLib\dctimegl.h GLCD\dctime_lcd.h Game\levelButton.h \
+./objects/levelbutton.o: Game\levelButton.c Game\levelButton.h \
+  MatrixLib\matrix.h Game\level.h MatrixLib\dctimegl.h GLCD\dctime_lcd.h \
   Game\playerRect.h Game\game.h SPI_touch\touch_module.h \
   GLCD\stm324xg_lcd_sklin.h \
   C:\Users\danie\AppData\Local\Arm\Packs\Keil\STM32F4xx_DFP\2.17.1\Drivers\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h \

@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <matrix.h>
+#include "dctimegl.h"
 
 
 #define FLOOR_WIDTH 15
@@ -34,15 +35,6 @@ bool posWinning(Level* level, int x1, int x2, int y1, int y2);
 Level* initLevel();
 void freeLevel(Level* level);
 
-typedef struct LevelButton {
-	int levelX;
-	int levelY;
-	Matrix* levelButtonMatrix;
-	bool triggered;
-	Matrix* levelTriggerFloorMatrix;
-} LevelButton;
-
-void initLevelButton(LevelButton* button, int levelX, int levelY, int* floorPoints, int floorCount);
-void freeLevelButtonMatrices(LevelButton* button);
+void projectLevelAllButtonTriggeredFloorToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
 
 #endif

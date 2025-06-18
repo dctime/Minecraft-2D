@@ -233,11 +233,11 @@ void initPlayer(RectPlayer* player, int startLocX, int startLocY) {
 	
 	player->aniAngleProcess = 0;
 	player->lastControl = UP;
-	player->levelPosX1 = 0;
-	player->levelPosY1 = 0;
+	player->levelPosX1 = startLocX;
+	player->levelPosY1 = startLocY;
 	// direction of the laydown
-	player->levelPosX2 = 0;
-	player->levelPosY2 = 0;
+	player->levelPosX2 = startLocX;
+	player->levelPosY2 = startLocY;
 	
 	
 	uint8_t modelPlayer[8][3] = {

@@ -15,20 +15,6 @@
 
 struct RectPlayer;
 
-typedef struct Button {
-	float x0, y0;
-	float wX, wY;
-	// private
-	bool isTouchingScreenLastTick;
-	bool firstTickInButton;
-	int lastTouchX;
-	int lastTouchY;
-	// public
-	bool isHolding;
-	bool triggered;
-	void (*triggerFunc)(struct RectPlayer*, struct Level*);
-} Button;
-
 typedef struct ScreenControlObject {
 		// private
 	bool isTouchingScreenLastTick;
@@ -47,5 +33,6 @@ Level* initLevel();
 void freeLevel(Level* level);
 
 void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
+bool inRect(int touchX, int touchY, int x0, int y0, int deltaX, int deltaY);
 
 #endif

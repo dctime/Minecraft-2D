@@ -1,6 +1,14 @@
 #include "level.h"
 #include "stdlib.h"
 #include "dctimegl.h"
+#include "levelButton.h"
+
+enum TileType {
+	AIR,
+	FLOOR,
+	GOAL,
+	BTN1F
+};
 
 void generateLevel2(Level* level) {
 		uint16_t temp[FLOOR_HEIGHT][FLOOR_WIDTH] = {
@@ -10,7 +18,7 @@ void generateLevel2(Level* level) {
 		{1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 2, 1},
 		{1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1},
 		{1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1},
-		{0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
+		{0, 1, 1, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0},
 		{0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0}
 	};
 		
@@ -42,7 +50,7 @@ void generateLevel2(Level* level) {
 		{0, -4},
 		{-1, -3},
 		{-4, -3},
-		{-4, -2},
+		{-5, -3},
 		{-5, -2},
 		{-5, 0},
 		{-1, 0},
@@ -84,8 +92,8 @@ void generateLevel2(Level* level) {
 	level->buttonCount = 1;
 	level->buttons = malloc(sizeof(struct LevelButton) * level->buttonCount);
 	int* floorPoints = malloc(sizeof(int) * 2);
-	*floorPoints = 1;
-	*(floorPoints+1) = -1;
+	*floorPoints = -5;
+	*(floorPoints+1) = -3;
 	initLevelButton(level->buttons, 1, -1, floorPoints, level->buttonCount);
 	free(floorPoints);
 
@@ -167,9 +175,16 @@ int getLevelTile(Level* level, int x, int y) {
 	return level->floor[-y+3][x+8];
 }
 
+bool isSolidFloor(Level* level, int x, int y) {
+	if (getLevelTile(level, x, y) == FLOOR) return true;
+	if (getLevelTile(level, x, y) == GOAL) return true;
+	if (getLevelTile(level, x, y) == BTN1F && level->buttonCount >= 1 && (level->buttons+1-1)->isOn) return true;
+	return false;
+}
+
 bool posValid(Level* level, int x1, int x2, int y1, int y2) {
-	if (getLevelTile(level, x1, y1) == 0) return false;
-	if (getLevelTile(level, x2, y2) == 0) return false;
+	if (!isSolidFloor(level, x1, y1)) return false;
+	if (!isSolidFloor(level, x2, y2)) return false;
 	return true;
 }
 
@@ -191,33 +206,10 @@ void freeLevel(Level* level) {
 	free(level);
 }
 
-void initLevelButton(LevelButton* button, int levelX, int levelY, int* floorPoints, int floorCount) {
-	button->triggered = false;
-	button->levelX = levelX;
-	button->levelY = levelY;
-	button->levelButtonMatrix = create_matrix(4, 4);
-	button->levelTriggerFloorMatrix = create_matrix(4, floorCount);
-	
-	for (int buttonPointIndex = 0; buttonPointIndex < 4; buttonPointIndex++) {
-		button->levelButtonMatrix->data[4*0+buttonPointIndex] = levelX;
-		button->levelButtonMatrix->data[4*1+buttonPointIndex] = levelY;
-		button->levelButtonMatrix->data[4*2+buttonPointIndex] = 0;
-		button->levelButtonMatrix->data[4*3+buttonPointIndex] = 1;
-	}
-	button->levelButtonMatrix->data[4*0+1] += 1;
-	button->levelButtonMatrix->data[4*1+2] += 1;
-	button->levelButtonMatrix->data[4*0+2] += 1;
-	button->levelButtonMatrix->data[4*1+3] += 1;
-	
-	for (int floorPointIndex = 0; floorPointIndex < floorCount; floorPointIndex++) {
-		button->levelTriggerFloorMatrix->data[4*0+floorPointIndex] = *(floorPoints++);
-		button->levelTriggerFloorMatrix->data[4*1+floorPointIndex] = *(floorPoints++);
-		button->levelTriggerFloorMatrix->data[4*2+floorPointIndex] = 0;
-		button->levelTriggerFloorMatrix->data[4*3+floorPointIndex] = 1;
+void projectLevelAllButtonTriggeredFloorToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	for (int levelButtonIndex = 0; levelButtonIndex < level->buttonCount; levelButtonIndex++) {
+		if ((level->buttons+levelButtonIndex)->isOn)
+			projectButtonTriggeredFloorToBuffer(level->buttons+levelButtonIndex, buffer, scale, rotX, rotZ, tZ, fov, near, far);
 	}
 }
 
-void freeLevelButtonMatrices(LevelButton* button) {
-	free_matrix(button->levelButtonMatrix);
-	free_matrix(button->levelTriggerFloorMatrix);
-}

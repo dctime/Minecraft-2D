@@ -1,4 +1,4 @@
---cpu=Cortex-M4.fp.sp
+--cpu=Cortex-M4.fp.sp --lto
 ".\objects\hardwaresystem_ini.o"
 ".\objects\user_defined.o"
 ".\objects\stm32f4xx_fsmc.o"
@@ -16,6 +16,8 @@
 ".\objects\level.o"
 ".\objects\game.o"
 ".\objects\playerrect.o"
+".\objects\uibutton.o"
+".\objects\levelbutton.o"
 ".\objects\startup_stm32f407xx.o"
 ".\objects\system_stm32f4xx.o"
 --strict --scatter ".\Objects\Touch_Samp.sct"
