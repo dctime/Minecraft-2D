@@ -123,14 +123,14 @@ void youWinScreen() {
 	char c1[23];
 	char c2[20] = "Press KEY1 to reset";
 	sprintf(c1, "Total Used Step: %d", getTotalUsedStep());
-
-
 	
 	LCD_DisplayStringAt(0, 150, c1, CENTER_MODE);
+	
+	delay_ms(1000);
 	LCD_DisplayStringAt(0, 200, c2, CENTER_MODE);
+	
 	LCD_RestoreColors();
 	LCD_RestoreFont();
-	
 	while(!key1Triggered);
 	key1Triggered = 0;
 }
