@@ -34,4 +34,10 @@ void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rot
 bool inRect(int touchX, int touchY, int x0, int y0, int deltaX, int deltaY);
 void play(void (*genLevelFunc)(Level*));
 
+int getTotalUsedStep();
+void accTotalUsedStep(int levelUsedStep);
+void resetTotalUsedStep();
+bool trySetLeastTotalUsedStep(int stepsCount);
+int getLeastTotalUsedStep();
+
 #endif

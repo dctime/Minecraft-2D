@@ -30,12 +30,12 @@ void resetButton1Setup() {
 	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;   // SYSCFG
 	
 	GPIOA->MODER &= ~(3 << (0 * 2));  // MODER0[1:0] = 00 = input mode
-	SYSCFG->EXTICR[0] &= ~SYSCFG_EXTICR1_EXTI0;  // ? PA0
+	SYSCFG->EXTICR[0] &= ~SYSCFG_EXTICR1_EXTI0;  // 
 	
-	EXTI->IMR  |= EXTI_IMR_IM0;     // ?? EXTI0 ?????
-	EXTI->FTSR |= EXTI_FTSR_TR0;    // ?????????(? 1 ? 0,??????)
+	EXTI->IMR  |= EXTI_IMR_IM0;     // 
+	EXTI->FTSR |= EXTI_FTSR_TR0;    // 
 	
-	NVIC_EnableIRQ(EXTI0_IRQn);  // ?? EXTI0 ????
+	NVIC_EnableIRQ(EXTI0_IRQn);  //
 }
 
 /**
@@ -60,6 +60,10 @@ genLevelFunc levelNumToFunc(int n) {
 
 void youWinScreen();
 
+
+
+extern volatile bool key1Triggered;
+
 int main(void)
 {
 	stm32f4_Hardware_Init();
@@ -79,25 +83,51 @@ int main(void)
 	
 //	Touchscreen_Calibration();
 	while(1) {
+		resetTotalUsedStep();
 		showMainMenu();
+		playlevel1:
 		play(levelNumToFunc(1));
+		if (key1Triggered) {
+			key1Triggered = false;
+			goto playlevel1;
+		}
+		playlevel2:
 		play(levelNumToFunc(2));
+		if (key1Triggered) {
+			key1Triggered = false;
+			goto playlevel2;
+		}
 		youWinScreen();
 	}
 }
 
-extern volatile bool key1Triggered;
-
 void youWinScreen() {
 	LCD_Clear(BLACK);
-	char c[10] = "YOU WIN!";
-	char c2[20] = "Press KEY1 to reset";
 	LCD_SaveFont();
 	LCD_SaveColors();
-	LCD_SetFont(&Font16);	
-	LCD_SetColors(WHITE, BLACK); // Text = red; back = white
-	LCD_DisplayStringLineCol(6, 10, c);
-	LCD_DisplayStringLineCol(10, 5, c2);
+	LCD_SetFont(&Font16);
+	
+	
+	if (trySetLeastTotalUsedStep(getTotalUsedStep())) {
+		LCD_SetColors(YELLOW, BLACK);
+		char c[12] = "NEW RECORD!";
+		LCD_DisplayStringAt(0, 100, c, CENTER_MODE);
+	} else {
+		LCD_SetColors(WHITE, BLACK);
+		char c[9] = "YOU WIN!";
+		LCD_DisplayStringAt(0, 100, c, CENTER_MODE);
+	}
+	
+	LCD_SetColors(WHITE, BLACK);
+	
+	char c1[23];
+	char c2[20] = "Press KEY1 to reset";
+	sprintf(c1, "Total Used Step: %d", getTotalUsedStep());
+
+
+	
+	LCD_DisplayStringAt(0, 150, c1, CENTER_MODE);
+	LCD_DisplayStringAt(0, 200, c2, CENTER_MODE);
 	LCD_RestoreColors();
 	LCD_RestoreFont();
 	

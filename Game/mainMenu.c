@@ -2,6 +2,8 @@
 #include "mainMenu.h"
 #include "game.h"
 #include "user_defined.h"	// for delay_ms(wait_ms)
+#include <limits.h>
+#include <stdio.h>
 
 void renderingSpinningPlayer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
 void Wait_PressPA0(uint16_t Cnum);
@@ -47,6 +49,13 @@ void showMainMenu() {
 		projectPlayerRectToBuffer(&player, buffer, 0.5, xRot, zRot, 4, 50, 0.1, 100.0);
 		Buffer_DrawRGBImage(tempX, tempY, width, height, mainTitleImage, buffer);
 		Buffer_DisplayStringAt(0, 180, (char*)" Press KEY1 To Continue", CENTER_MODE, buffer, &Font12, WHITE, BLACK);
+		
+		if (getLeastTotalUsedStep() != INT_MAX) {
+			char c[24];
+			sprintf(c, "Least Used Steps: %d", getLeastTotalUsedStep());
+			Buffer_DisplayStringAt(0, 200, c, CENTER_MODE, buffer, &Font12, WHITE, BLACK);
+		}
+		
 		drawBuffer(buffer);
 	}
 	key1Triggered = 0;

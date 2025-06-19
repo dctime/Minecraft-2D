@@ -5,6 +5,9 @@
 #include "touch_module.h"
 #include "uiButton.h"
 #include "levelButton.h"
+#include <stdio.h>
+#include "stm324xg_lcd_sklin.h"
+#include <limits.h>
 
 static TS_StateTypeDef tsState;
 
@@ -183,15 +186,17 @@ bool checkWinning(Level* level, RectPlayer* player) {
 
 volatile bool key1Triggered;
 
-void nextLevelScreen() {
+void nextLevelScreen(int usedStep) {
 	LCD_Clear(BLACK);
-	char c[7] = "Bravo!";
+	accTotalUsedStep(usedStep);
+	char c[22];
 	char c2[23] = "Press KEY1 to continue";
+	sprintf(c, "Total Used Step: %d", getTotalUsedStep());
 	LCD_SaveFont();
 	LCD_SaveColors();
 	LCD_SetFont(&Font16);	
 	LCD_SetColors(WHITE, BLACK); // Text = red; back = white
-	LCD_DisplayStringLineCol(6, 10, c);
+	LCD_DisplayStringLineCol(6, 3, c);
 	LCD_DisplayStringLineCol(10, 3, c2);
 	LCD_RestoreColors();
 	LCD_RestoreFont();
@@ -203,8 +208,8 @@ void nextLevelScreen() {
 volatile bool key1Triggered = 0;
 
 void EXTI0_IRQHandler(void) {
-    if (EXTI->PR & EXTI_PR_PR0) {  // ??? EXTI0 ???
-        EXTI->PR = EXTI_PR_PR0;    // ??????
+    if (EXTI->PR & EXTI_PR_PR0) {  //
+        EXTI->PR = EXTI_PR_PR0;    //
 				key1Triggered = 1;
     }
 }
@@ -245,7 +250,7 @@ void play(void (*genLevelFunc)(Level*)) {
 		TS_GetState(&tsState);
 		
 		if (checkWinning(level, &player)) {
-			nextLevelScreen();
+			nextLevelScreen(player.usedStep);
 			break;
 		}
 		
@@ -267,11 +272,15 @@ void play(void (*genLevelFunc)(Level*)) {
 		projectLevelButtonToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectLevelAllButtonTriggeredFloorToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectPlayerRectToBuffer(&player, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
-			
+		
 		buttonToBuffer(&upButton, buffer);
 		buttonToBuffer(&downButton, buffer);
 		buttonToBuffer(&leftButton, buffer);
 		buttonToBuffer(&rightButton, buffer);
+		
+		char stepCountText[15];
+		sprintf(stepCountText, "Steps Used: %d", player.usedStep);
+		Buffer_DisplayStringAt(0, 0, stepCountText, LEFT_MODE, buffer, &Font12, WHITE, BLACK);
 		
 		drawBuffer(buffer);
 	}
@@ -280,6 +289,33 @@ void play(void (*genLevelFunc)(Level*)) {
 	freeBuffer(buffer);
 	freePlayerModel(&player);
 	
+}
+
+static int leastTotalUsedStep = INT_MAX;
+static int totalUsedStep = 0;
+
+int getTotalUsedStep() {
+	return totalUsedStep;
+}
+
+void accTotalUsedStep(int levelUsedStep) {
+	totalUsedStep += levelUsedStep;
+}
+
+void resetTotalUsedStep() {
+	totalUsedStep = 0;
+}
+
+bool trySetLeastTotalUsedStep(int stepsCount) {
+	if (leastTotalUsedStep > stepsCount) {
+		leastTotalUsedStep = stepsCount;
+		return true;
+	} 
+	return false;
+}
+
+int getLeastTotalUsedStep() {
+	return leastTotalUsedStep;
 }
 
 

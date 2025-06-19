@@ -257,7 +257,8 @@ void initPlayer(RectPlayer* player, int startLocX, int startLocY) {
 		player->modelMatrix->data[PLAYERRECTPOINTNUM*2+pointIndex] = modelPlayer[pointIndex][2];
 		player->modelMatrix->data[PLAYERRECTPOINTNUM*3+pointIndex] = 1;
 	}
-
+	
+	player->usedStep = 0;
 }
 
 void freePlayerModel(RectPlayer* player) {

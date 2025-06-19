@@ -83,6 +83,7 @@ void upButtonTrigger(RectPlayer* player, Level* level) {
 		player->levelPosY1 = targetY1;
 		player->levelPosY2 = targetY2;
 		player->aniAngleProcess = 90;
+		player->usedStep += 1;
 	}
 }
 
@@ -114,6 +115,7 @@ void downButtonTrigger(RectPlayer* player, Level* level) {
 		player->levelPosY1 = targetY1;
 		player->levelPosY2 = targetY2;
 		player->aniAngleProcess = 90;
+		player->usedStep += 1;
 	}
 }
 
@@ -145,6 +147,7 @@ void leftButtonTrigger(RectPlayer* player, Level* level) {
 		player->levelPosY1 = targetY1;
 		player->levelPosY2 = targetY2;
 		player->aniAngleProcess = 90;
+		player->usedStep += 1;
 	}
 }
 
@@ -176,5 +179,6 @@ void rightButtonTrigger(RectPlayer* player, Level* level) {
 		player->levelPosY1 = targetY1;
 		player->levelPosY2 = targetY2;
 		player->aniAngleProcess = 90;
+		player->usedStep += 1;
 	}
 }

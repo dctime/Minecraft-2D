@@ -17,6 +17,7 @@ typedef struct RectPlayer {
 	int levelPosY2;
 	int aniAngleProcess; // 0 <- 90
 	enum PlayerLastControl lastControl;
+	int usedStep;
 } RectPlayer;
 
 void initPlayer(RectPlayer* player, int startLocX, int startLocY);
