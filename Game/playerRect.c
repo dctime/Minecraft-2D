@@ -259,3 +259,8 @@ void initPlayer(RectPlayer* player, int startLocX, int startLocY) {
 	}
 
 }
+
+void freePlayerModel(RectPlayer* player) {
+	free_matrix(player->modelMatrix);
+}
+	

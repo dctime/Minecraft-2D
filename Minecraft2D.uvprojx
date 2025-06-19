@@ -509,6 +509,11 @@
               <FileType>1</FileType>
               <FilePath>.\Game\levelButton.c</FilePath>
             </File>
+            <File>
+              <FileName>mainMenu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\mainMenu.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1021,6 +1026,11 @@
               <FileName>levelButton.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Game\levelButton.c</FilePath>
+            </File>
+            <File>
+              <FileName>mainMenu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\mainMenu.c</FilePath>
             </File>
           </Files>
         </Group>

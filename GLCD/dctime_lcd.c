@@ -3,6 +3,8 @@
 #include "dctimegl.h"
 #include <math.h>
 
+
+
 void LCD_OpenWin(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1);
 
 void freeBuffer(Buffer* buffer) {
@@ -63,16 +65,6 @@ void writeBuffer(int x, int y, struct Buffer* buffer, uint16_t color) {
 #define ABS(X)  ((X) > 0 ? (X) : -(X))
 //=============================================
 
-/* Global variables to set the written text color */
-typedef struct 
-{ 
-  uint16_t TextColor;
-  uint16_t BackColor;
-  sFONT    *pFont; 
-}LCD_DrawPropTypeDef;
-
-static LCD_DrawPropTypeDef DrawProp={ \
-			Default_TextColor, Default_BackColor, &LCD_DEFAULT_FONT};
 
 void Buffer_DrawVLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, struct Buffer* buffer, uint16_t color)
 {
@@ -252,4 +244,149 @@ uint8_t RGB332GrayScale(double z) {
 	uint8_t fullG = scale;
 	uint8_t fullB = scale/2;
 	return fullR << 5 | fullG << 2 | fullB;
+}
+
+void Buffer_DrawRGBImage(uint16_t Xpos, uint16_t Ypos, uint16_t Xsize, uint16_t Ysize, uint8_t *pdata, Buffer* buffer)
+{
+  uint16_t x1, y1;
+  uint16_t x, y;
+  
+	if ( (Xpos > LCD_PIXEL_WIDTH) || (Ypos > LCD_PIXEL_HEIGHT)) return;
+	x1 = Xpos + Xsize-1;
+	y1 = Ypos + Ysize-1;
+	if (x1 > LCD_PIXEL_WIDTH) Xsize = LCD_PIXEL_WIDTH+1 - Xpos;
+	if (y1 > LCD_PIXEL_HEIGHT) Ysize = LCD_PIXEL_HEIGHT+1 - Ypos;
+  
+  for(y= Ypos; y < Ysize+Ypos; y++)
+  {
+		for(x= Xpos; x < Xsize+Xpos; x++)
+		{
+    /* Write 16-bit GRAM Reg */
+			writeBuffer((uint16_t)x, (uint16_t)y, buffer, *(volatile uint16_t *)pdata);
+			pdata += 2;
+		}
+	}
+}
+
+void Buffer_DisplayChar(uint16_t Xpos, uint16_t Ypos,  uint8_t Ascii, uint16_t fColor, uint16_t bColor, Buffer* buffer, sFONT* font)
+{
+	// wf =: font_width,
+	// hf =:  font_height
+// bytes_wf = number of bytes per width line in a font
+// bytes_f  = number of bytes per font
+
+	int	iw;
+  uint32_t byteNr, jw;
+	uint16_t  hp_limit;
+	const uint8_t *c;
+	
+	uint16_t wf = font->Width; 	// font_width
+	uint16_t hf = font->Height; // font_height
+	uint16_t bytes_wf = (wf+7) /8;	// number of bytes per width line in a font
+	uint16_t bytes_f = hf * bytes_wf;	// number of bytes per font (see Font12_Table or Font20_Table)
+	
+	if((Ascii > '~') || (Ascii < ' ')) Ascii= ' ';
+		
+	iw = Ascii - 32;  // make ' ' (space) at offset of 0
+  c = &font->table[iw * bytes_f];	
+	
+	LCD_OpenWin(Xpos, Ypos, Xpos+wf-1, Ypos+hf-1);
+	byteNr =0;
+	hp_limit = Ypos + hf;
+	
+  for(; Ypos < hp_limit; Ypos++)		// font height 
+  {
+		uint8_t as;
+
+		as = c[byteNr++];
+		iw = 0;
+    for(uint32_t x = Xpos; x < Xpos+wf; x++)	//  loop for the font width (wf)
+    {
+				if(as & (0x80))
+				{
+					writeBuffer(x, Ypos, buffer, fColor);
+				}
+				else
+				{
+					writeBuffer(x, Ypos, buffer, bColor);
+				}
+				as <<= 1;
+				iw++;
+				if (iw == 8){							// reach 1 byte = 8 bits
+					as = c[byteNr++];
+					iw = 0;
+				}
+    }
+	}
+}
+
+void Buffer_DisplayStringSegment(uint16_t Xpos, uint16_t Ypos, char *Text, Buffer* buffer, uint16_t fColor, uint16_t bColor, sFONT* font) //, uint16_t font_width)
+{
+	uint16_t wf = font->Width;
+	// wf =: font_width,
+	// hf =:  font_height
+// 	font_width = pLCD_Currentfonts->Width  // wf = font_width
+  while ((*Text != 0) & (Xpos  <= (LCD_PIXEL_WIDTH - (wf-1))) )
+  {
+    /* Display one character on LCD */
+    Buffer_DisplayChar(Xpos, Ypos, (uint8_t)*Text, fColor, bColor, buffer, font);
+    /* Decrement the column position by 16 */
+    Xpos += wf;
+    /* Point on the next character */
+    Text++;
+  }
+}
+
+void Buffer_DisplayStringAt(uint16_t Xpos, uint16_t Ypos, char *Text, Line_ModeTypdef Mode, Buffer* buffer, sFONT* font, uint16_t fColor, uint16_t bColor)
+{
+  uint32_t leftcolumn=0;
+  uint32_t size = 0, xBlank=0; 
+  char  *ptr = Text;
+	uint16_t wf = font->Width;
+  
+	// wf =: font_width,
+	// hf =:  font_height
+// 	font_width = pLCD_Currentfonts->Width  // wf = font_width
+	if (Mode == LEFT_MODE){
+				leftcolumn = Xpos;				
+	} else
+	{
+ /* Get the text size */
+		while (*ptr++) size ++ ;
+  
+  /* Characters number per line */
+		xBlank = ((LCD_PIXEL_WIDTH+1) /wf);		// maximum number of characters per line
+		if (size > xBlank){
+			xBlank = 0;
+		}	else {		
+			xBlank = (xBlank - size)* wf;			
+		}
+		xBlank += (LCD_PIXEL_WIDTH+1) %wf;		// width of blank space of this string line
+	}
+		switch (Mode)
+		{
+		case LEFT_MODE:
+			{
+				break;
+			}
+		case CENTER_MODE:
+			{
+				leftcolumn = Xpos + xBlank/ 2;
+				break;
+			}
+		case RIGHT_MODE:
+			{
+				// if leftcolumn = xBlank, the right border of the string is at the right side of the screen
+				leftcolumn = LCD_PIXEL_WIDTH - Xpos;
+				if (leftcolumn > xBlank){
+					leftcolumn = 0;
+				} else {
+					leftcolumn = xBlank - leftcolumn;
+				}
+				break;
+			}
+		}
+	
+  /* Send the string character by character on LCD */
+	Buffer_DisplayStringSegment((uint16_t) leftcolumn, Ypos, Text, buffer, fColor, bColor, font);
 }

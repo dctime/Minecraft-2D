@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include "stm324xg_lcd_sklin.h"
 
 #define LCD_Width 320
 #define LCD_Height 240
@@ -38,6 +39,8 @@ void Buffer_FillCircle(uint16_t Xcen, uint16_t Ycen, uint16_t Radius, struct Buf
 void Buffer_DrawHLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, struct Buffer* buffer, uint16_t color);
 void Buffer_DrawVLine(uint16_t Xpos, uint16_t Ypos, uint16_t Length, struct Buffer* buffer, uint16_t color);
 void Buffer_FillRect(uint16_t Xpos, uint16_t Ypos, uint16_t Width, uint16_t Height, Buffer* buffer, uint16_t color);
+void Buffer_DrawRGBImage(uint16_t Xpos, uint16_t Ypos, uint16_t Xsize, uint16_t Ysize, uint8_t *pdata, Buffer* buffer);
+void Buffer_DisplayStringAt(uint16_t Xpos, uint16_t Ypos, char *Text, Line_ModeTypdef Mode, Buffer* buffer, sFONT* font, uint16_t fColor, uint16_t bColor);
 
 uint8_t RGB565ToRGB332(uint16_t n);
 uint16_t RGB332ToRGB565(uint8_t n);

@@ -172,6 +172,10 @@ void generateLevel1(Level* level) {
 
 int getLevelTile(Level* level, int x, int y) {
 	// debugText(level->floor[-y+3][x+8]);
+	int tempX = x+8;
+	int tempY = -y+3;
+	if (tempX < 0 || tempX >= FLOOR_WIDTH) return AIR;
+	if (tempY < 0 || tempY >= FLOOR_HEIGHT) return AIR;
 	return level->floor[-y+3][x+8];
 }
 
@@ -200,6 +204,10 @@ Level* initLevel() {
 }
 
 void freeLevel(Level* level) {
+	for (int buttonIndex = 0; buttonIndex < level->buttonCount; buttonIndex++) {
+		freeLevelButtonMatrices(level->buttons+buttonIndex);
+	}
+
 	free(level->buttons);
 	free_matrix(level->floorMatrix);
 	free_matrix(level->goalMatrix);

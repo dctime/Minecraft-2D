@@ -18,6 +18,7 @@
 ".\objects\playerrect.o"
 ".\objects\uibutton.o"
 ".\objects\levelbutton.o"
+".\objects\mainmenu.o"
 ".\objects\startup_stm32f407xx.o"
 ".\objects\system_stm32f4xx.o"
 --strict --scatter ".\Objects\Touch_Samp.sct"

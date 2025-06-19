@@ -152,33 +152,35 @@ bool checkWinning(Level* level, RectPlayer* player) {
 	return false;
 }
 
-volatile static bool gameReset;
+volatile bool key1Triggered;
 
-void youWinScreen() {
+void nextLevelScreen() {
 	LCD_Clear(BLACK);
-	char c[10] = "YOU WIN!";
+	char c[7] = "Bravo!";
+	char c2[23] = "Press KEY1 to continue";
 	LCD_SaveFont();
 	LCD_SaveColors();
 	LCD_SetFont(&Font16);	
 	LCD_SetColors(WHITE, BLACK); // Text = red; back = white
 	LCD_DisplayStringLineCol(6, 10, c);
+	LCD_DisplayStringLineCol(10, 5, c2);
 	LCD_RestoreColors();
 	LCD_RestoreFont();
 	
-		while(!gameReset)
-			continue;
+	while(!key1Triggered);
+	key1Triggered = 0;
 }
 
-volatile static bool gameReset = 0;
+volatile bool key1Triggered = 0;
 
 void EXTI0_IRQHandler(void) {
     if (EXTI->PR & EXTI_PR_PR0) {  // ??? EXTI0 ???
         EXTI->PR = EXTI_PR_PR0;    // ??????
-				gameReset = 1;
+				key1Triggered = 1;
     }
 }
 
-void play() {
+void play(void (*genLevelFunc)(Level*)) {
 	Buffer* buffer = createBuffer();
 	Level* level = initLevel();
 	
@@ -205,16 +207,16 @@ void play() {
 	RectPlayer player;
 	initPlayer(&player, -2, 0);
 	
-	generateLevel2(level);
+	genLevelFunc(level);
 	
 	double worldRotX = -60;
 	int touchX;
 	int touchY;
-	while (!gameReset) {
+	while (!key1Triggered) {
 		TS_GetState(&tsState);
 		
 		if (checkWinning(level, &player)) {
-			youWinScreen();
+			nextLevelScreen();
 			break;
 		}
 		
@@ -246,7 +248,8 @@ void play() {
 
 	freeLevel(level);
 	freeBuffer(buffer);
-	gameReset = 0;
+	freePlayerModel(&player);
+	
 }
 
 

@@ -51,6 +51,7 @@ void freeLevelButtonMatrices(LevelButton* button) {
 }
 
 void projectLevelButtonToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	if (level->buttonCount == 0) return;
 	Matrix* scaledMatrix = scaleMatrix(level->buttons->levelButtonMatrix, scale, scale, scale);
 	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
 	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
