@@ -32,7 +32,7 @@ void freeLevel(Level* level);
 
 void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
 bool inRect(int touchX, int touchY, int x0, int y0, int deltaX, int deltaY);
-void play(void (*genLevelFunc)(Level*));
+bool play(void (*genLevelFunc)(Level*));
 
 int getTotalUsedStep();
 void accTotalUsedStep(int levelUsedStep);

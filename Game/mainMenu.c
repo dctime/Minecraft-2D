@@ -6,7 +6,6 @@
 #include <stdio.h>
 
 void renderingSpinningPlayer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
-void Wait_PressPA0(uint16_t Cnum);
 
 static uint16_t width = 200;
 static uint16_t height = 38;
@@ -16,6 +15,8 @@ static uint16_t tempY = 101;
 extern volatile bool key1Triggered;
 
 void showMainMenu() {
+	delay_ms(1000);
+	
 	uint8_t res;
 	
 	res = LCD_DrawJPG(tempX, tempY, (uint8_t *) JPG_fileAddress, width, height);
@@ -42,6 +43,7 @@ void showMainMenu() {
 	int xRot = 0;
 	int zRot = 0;
 
+	key1Triggered = 0;
 	while(!key1Triggered) {
 		clearBuffer(BLACK, buffer, NULL);
 		xRot += 5;
@@ -64,20 +66,5 @@ void showMainMenu() {
 	free(mainTitleImage);
 }
 
-//===============================
-void Wait_PressPA0(uint16_t Cnum)
-{
-	uint16_t count = Cnum;
-	while(1)
-	{	
-    if(GPIOA->IDR & Bit(0))						// normally low
-    {
-			if (--(count)==0){
-				return;
-			}
-		} else count = Cnum;
 
-    delay_ms(10);
-	}
-}
 

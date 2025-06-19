@@ -79,24 +79,12 @@ int main(void)
 	
 	resetButton1Setup();
 	
-	
-	
 //	Touchscreen_Calibration();
 	while(1) {
 		resetTotalUsedStep();
 		showMainMenu();
-		playlevel1:
-		play(levelNumToFunc(1));
-		if (key1Triggered) {
-			key1Triggered = false;
-			goto playlevel1;
-		}
-		playlevel2:
-		play(levelNumToFunc(2));
-		if (key1Triggered) {
-			key1Triggered = false;
-			goto playlevel2;
-		}
+		while(!play(levelNumToFunc(1)));
+		while(!play(levelNumToFunc(2)));
 		youWinScreen();
 	}
 }
@@ -131,6 +119,7 @@ void youWinScreen() {
 	
 	LCD_RestoreColors();
 	LCD_RestoreFont();
+	key1Triggered = 0;
 	while(!key1Triggered);
 	key1Triggered = 0;
 }

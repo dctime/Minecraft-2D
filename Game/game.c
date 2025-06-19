@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "stm324xg_lcd_sklin.h"
 #include <limits.h>
+#include "user_defined.h"
 
 static TS_StateTypeDef tsState;
 
@@ -201,11 +202,28 @@ void nextLevelScreen(int usedStep) {
 	LCD_RestoreColors();
 	LCD_RestoreFont();
 	
+	key1Triggered = 0;
 	while(!key1Triggered);
 	key1Triggered = 0;
 }
 
 volatile bool key1Triggered = 0;
+
+//void Wait_PressPA0(uint16_t Cnum)
+//{
+//	uint16_t count = Cnum;
+//	while(1)
+//	{	
+//    if(GPIOA->IDR & 0x01)						// normally low
+//    {
+//			if (--(count)==0){
+//				return;
+//			}
+//		} else count = Cnum;
+
+//    delay_ms(10);
+//	}
+//}
 
 void EXTI0_IRQHandler(void) {
     if (EXTI->PR & EXTI_PR_PR0) {  //
@@ -214,7 +232,9 @@ void EXTI0_IRQHandler(void) {
     }
 }
 
-void play(void (*genLevelFunc)(Level*)) {
+bool play(void (*genLevelFunc)(Level*)) {
+	key1Triggered = false;
+	
 	Buffer* buffer = createBuffer();
 	Level* level = initLevel();
 	
@@ -246,12 +266,18 @@ void play(void (*genLevelFunc)(Level*)) {
 	double worldRotX = -60;
 	int touchX;
 	int touchY;
+	
+	key1Triggered = false;
 	while (!key1Triggered) {
 		TS_GetState(&tsState);
 		
 		if (checkWinning(level, &player)) {
 			nextLevelScreen(player.usedStep);
-			break;
+			
+			freeLevel(level);
+			freeBuffer(buffer);
+			freePlayerModel(&player);
+			return true;
 		}
 		
 		buttonTick(&upButton, &tsState, &player, level);
@@ -289,6 +315,7 @@ void play(void (*genLevelFunc)(Level*)) {
 	freeBuffer(buffer);
 	freePlayerModel(&player);
 	
+	return false;
 }
 
 static int leastTotalUsedStep = INT_MAX;
