@@ -21,15 +21,9 @@ void Driver_GPIO(void);
 void Driver_SPIpin_GPIO(void);
 
 void Default_Calibration(void);
-void Touchscreen_demo (void);
-void Touchscreen_playFig(void);
 
 void Touchscreen_Calibration (void);
 
-void Touch_sample_FreeDraw(void);
-void Touch_sample_Sine(void);
-void Touch_sample_Hit(void);
-void Sample_alarmA(void);
 
 void resetButton1Setup() {
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;    // GPIOA

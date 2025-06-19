@@ -96,10 +96,19 @@ void generateLevel2(Level* level) {
 	*(floorPoints+1) = -3;
 	initLevelButton(level->buttons, 1, -1, floorPoints, level->buttonCount);
 	free(floorPoints);
-
-//	debugText(level->buttons->levelButtonMatrix->data[4*0+0]);
-//	debugText(level->buttons->levelButtonMatrix->data[4*1+0]);
-//	debugText(666);
+	
+	level->fixPairsCount = 1;
+	level->fixMatrix = create_matrix(4, level->fixPairsCount*2);
+	float fixPointsTemp[2][2] = {
+		{-1, -3},
+		{0, -4}
+	};
+	for (int fixPointIndex = 0; fixPointIndex < level->fixPairsCount*2; fixPointIndex++) {
+		level->fixMatrix->data[level->fixMatrix->cols*0+fixPointIndex] = fixPointsTemp[fixPointIndex][0];
+		level->fixMatrix->data[level->fixMatrix->cols*1+fixPointIndex] = fixPointsTemp[fixPointIndex][1];
+		level->fixMatrix->data[level->fixMatrix->cols*2+fixPointIndex] = 0;
+		level->fixMatrix->data[level->fixMatrix->cols*3+fixPointIndex] = 1;
+	}
 }
 
 void generateLevel1(Level* level) {
@@ -168,6 +177,7 @@ void generateLevel1(Level* level) {
 	}
 	
 	level->buttonCount = 0;
+	level->fixPairsCount = 0;
 }
 
 int getLevelTile(Level* level, int x, int y) {
@@ -211,6 +221,9 @@ void freeLevel(Level* level) {
 	free(level->buttons);
 	free_matrix(level->floorMatrix);
 	free_matrix(level->goalMatrix);
+	if (level->fixPairsCount != 0) {
+		free_matrix(level->fixMatrix);
+	}
 	free(level);
 }
 

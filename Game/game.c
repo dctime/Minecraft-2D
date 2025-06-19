@@ -69,6 +69,35 @@ void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rot
 	free_matrix(projectedMatrix);
 }
 
+void projectLevelFixToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	if (level->fixPairsCount == 0) return;
+	Matrix* scaledMatrix = scaleMatrix(level->fixMatrix, scale, scale, scale);
+	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
+	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
+	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
+	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
+	processProjectedMatrix(projectedMatrix);
+	
+	free_matrix(scaledMatrix);
+	free_matrix(rotatedMatrixAxisX);
+	free_matrix(rotatedMatrixAxisZ);
+	free_matrix(translatedMatrix);
+	
+	ScreenCoord* coords = malloc(sizeof(ScreenCoord) * level->fixPairsCount*2);
+	
+	for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
+		struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
+		coords[columnIndex] = coord;
+	}
+	
+	for (int pairIndex = 0; pairIndex < level->fixPairsCount; pairIndex++) {
+		Buffer_DrawLine(coords[pairIndex*2].x, coords[pairIndex*2].y, coords[pairIndex*2+1].x, coords[pairIndex*2+1].y, buffer, BLACK);
+	}
+	
+	free(coords);
+	free_matrix(projectedMatrix);
+}
+
 bool inRect(int touchX, int touchY, int x0, int y0, int deltaX, int deltaY) {
 	if (touchX >= x0 && touchX <= x0+deltaX) {
 		if (touchY >= y0 && touchY <= y0+deltaY) {
@@ -163,7 +192,7 @@ void nextLevelScreen() {
 	LCD_SetFont(&Font16);	
 	LCD_SetColors(WHITE, BLACK); // Text = red; back = white
 	LCD_DisplayStringLineCol(6, 10, c);
-	LCD_DisplayStringLineCol(10, 5, c2);
+	LCD_DisplayStringLineCol(10, 3, c2);
 	LCD_RestoreColors();
 	LCD_RestoreFont();
 	
@@ -233,6 +262,7 @@ void play(void (*genLevelFunc)(Level*)) {
 		clearBuffer(BLACK, buffer, NULL);
 		
 		projectLevelToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
+		projectLevelFixToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectGoalToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectLevelButtonToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectLevelAllButtonTriggeredFloorToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);

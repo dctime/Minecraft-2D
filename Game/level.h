@@ -22,9 +22,11 @@ typedef struct Level {
 	uint8_t midY;
 	Matrix* floorMatrix; // stores render 3d coords
 	Matrix* goalMatrix; 
+	Matrix* fixMatrix;
 	int floorPointsNum;
 	struct LevelButton* buttons;
 	int buttonCount;
+	int fixPairsCount;
 } Level;
 
 void generateLevel2(Level* level);
