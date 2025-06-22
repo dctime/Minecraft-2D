@@ -1,0 +1,55 @@
+./objects/digit_cnn.o: AI\digit_cnn.c AI\digit_cnn.h \
+  AI\digit_cnn_config.h AI\Middlewares\ST\AI\Inc\ai_platform.h \
+  AI\digit_cnn_data.h AI\digit_cnn_data_params.h \
+  AI\Middlewares\ST\AI\Inc\ai_platform_interface.h \
+  AI\Middlewares\ST\AI\Inc\datatypes_network.h \
+  AI\Middlewares\ST\AI\Inc\ai_datatypes.h \
+  AI\Middlewares\ST\AI\Inc\ai_datatypes_defines.h \
+  AI\Middlewares\ST\AI\Inc\core_assert.h \
+  AI\Middlewares\ST\AI\Inc\ai_datatypes_format.h \
+  AI\Middlewares\ST\AI\Inc\formats_list.h \
+  AI\Middlewares\ST\AI\Inc\stai.h \
+  AI\Middlewares\ST\AI\Inc\ai_math_helpers.h \
+  AI\Middlewares\ST\AI\Inc\ai_lite_math_helpers.h \
+  AI\Middlewares\ST\AI\Inc\core_common.h \
+  AI\Middlewares\ST\AI\Inc\core_datatypes.h \
+  AI\Middlewares\ST\AI\Inc\core_convert.h \
+  AI\Middlewares\ST\AI\Inc\layers.h \
+  AI\Middlewares\ST\AI\Inc\layers_common.h \
+  AI\Middlewares\ST\AI\Inc\ai_common_config.h \
+  AI\Middlewares\ST\AI\Inc\layers_list.h \
+  AI\Middlewares\ST\AI\Inc\layers_conv2d.h \
+  AI\Middlewares\ST\AI\Inc\layers_nl.h \
+  AI\Middlewares\ST\AI\Inc\lite_internal_apis.h \
+  AI\Middlewares\ST\AI\Inc\ai_lite_interface.h \
+  AI\Middlewares\ST\AI\Inc\ai_lite.h \
+  AI\Middlewares\ST\AI\Inc\lite_nl_list.h \
+  AI\Middlewares\ST\AI\Inc\layers_pool.h \
+  AI\Middlewares\ST\AI\Inc\lite_maxpool_dqnn.h \
+  AI\Middlewares\ST\AI\Inc\lite_pool_f32.h \
+  AI\Middlewares\ST\AI\Inc\layers_custom.h \
+  AI\Middlewares\ST\AI\Inc\layers_dense.h \
+  AI\Middlewares\ST\AI\Inc\layers_formats_converters.h \
+  AI\Middlewares\ST\AI\Inc\layers_generic.h \
+  AI\Middlewares\ST\AI\Inc\layers_lite_graph.h \
+  AI\Middlewares\ST\AI\Inc\layers_norm.h \
+  AI\Middlewares\ST\AI\Inc\layers_pad_dqnn.h \
+  AI\Middlewares\ST\AI\Inc\layers_pad_generic.h \
+  AI\Middlewares\ST\AI\Inc\layers_rnn.h \
+  AI\Middlewares\ST\AI\Inc\layers_sm.h \
+  AI\Middlewares\ST\AI\Inc\layers_ml.h \
+  AI\Middlewares\ST\AI\Inc\layers_ml_iforest.h \
+  AI\Middlewares\ST\AI\Inc\layers_ml_svc.h \
+  AI\Middlewares\ST\AI\Inc\layers_ml_linearclassifier.h \
+  AI\Middlewares\ST\AI\Inc\layers_ml_treeensembleclassifier.h \
+  AI\Middlewares\ST\AI\Inc\layers_ml_treeensembleregressor.h \
+  AI\Middlewares\ST\AI\Inc\layers_ml_svmregressor.h \
+  AI\Middlewares\ST\AI\Inc\layers_conv2d_dqnn.h \
+  AI\Middlewares\ST\AI\Inc\layers_dense_dqnn.h \
+  AI\Middlewares\ST\AI\Inc\layers_pool_dqnn.h \
+  AI\Middlewares\ST\AI\Inc\layers_generic_dqnn.h \
+  AI\Middlewares\ST\AI\Inc\layers_upsample_generic.h \
+  AI\Middlewares\ST\AI\Inc\layers_upsample.h \
+  AI\Middlewares\ST\AI\Inc\layers_resize.h \
+  AI\Middlewares\ST\AI\Inc\layers_argminmax.h \
+  AI\Middlewares\ST\AI\Inc\layers_wrappers.h

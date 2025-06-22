@@ -340,7 +340,7 @@
               <MiscControls></MiscControls>
               <Define></Define>
               <Undefine></Undefine>
-              <IncludePath>.\User_common;.\GLCD;.\GLCD\bmp_files;.\SPI_touch;.\RNG;.\GLCD\tjpgd3\src;.\MatrixLib;.\Game</IncludePath>
+              <IncludePath>.\User_common;.\GLCD;.\GLCD\bmp_files;.\SPI_touch;.\RNG;.\GLCD\tjpgd3\src;.\MatrixLib;.\Game;.\AI;.\AI\Middlewares\ST\AI\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -371,7 +371,7 @@
             <TextAddressRange>0x08000000</TextAddressRange>
             <DataAddressRange>0x20000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile></ScatterFile>
+            <ScatterFile>.\AI\testAI.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc></Misc>
@@ -513,6 +513,41 @@
               <FileName>mainMenu.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Game\mainMenu.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AI</GroupName>
+          <Files>
+            <File>
+              <FileName>ai_func.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AI\ai_func.c</FilePath>
+            </File>
+            <File>
+              <FileName>digit_cnn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AI\digit_cnn.c</FilePath>
+            </File>
+            <File>
+              <FileName>digit_cnn_data.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AI\digit_cnn_data.c</FilePath>
+            </File>
+            <File>
+              <FileName>digit_cnn_data_params.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AI\digit_cnn_data_params.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AILib</GroupName>
+          <Files>
+            <File>
+              <FileName>NetworkRuntime1010_CM4_Keil.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>.\AI\Middlewares\ST\AI\Lib\NetworkRuntime1010_CM4_Keil.lib</FilePath>
             </File>
           </Files>
         </Group>
@@ -1031,6 +1066,41 @@
               <FileName>mainMenu.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Game\mainMenu.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AI</GroupName>
+          <Files>
+            <File>
+              <FileName>ai_func.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AI\ai_func.c</FilePath>
+            </File>
+            <File>
+              <FileName>digit_cnn.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AI\digit_cnn.c</FilePath>
+            </File>
+            <File>
+              <FileName>digit_cnn_data.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AI\digit_cnn_data.c</FilePath>
+            </File>
+            <File>
+              <FileName>digit_cnn_data_params.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\AI\digit_cnn_data_params.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>AILib</GroupName>
+          <Files>
+            <File>
+              <FileName>NetworkRuntime1010_CM4_Keil.lib</FileName>
+              <FileType>4</FileType>
+              <FilePath>.\AI\Middlewares\ST\AI\Lib\NetworkRuntime1010_CM4_Keil.lib</FilePath>
             </File>
           </Files>
         </Group>

@@ -10,6 +10,7 @@
 #include "game.h"
 #include "mainMenu.h"
 #include "level.h"
+#include "ai_func.h"
 
 #define LCD_Width 320
 #define LCD_Height 240
@@ -63,6 +64,7 @@ void youWinScreen();
 
 
 extern volatile bool key1Triggered;
+float input_image[28][28];
 
 int main(void)
 {
@@ -78,6 +80,14 @@ int main(void)
 	Driver_GPIO();
 	
 	resetButton1Setup();
+	
+	// AI Test
+	if (!init_cnn()) {
+		while(1);
+	}
+	
+	run_cnn((float*)input_image);
+	free_cnn();
 	
 //	Touchscreen_Calibration();
 	while(1) {
