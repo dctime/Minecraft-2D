@@ -1,7 +1,8 @@
 #include "projectToBuffer.h"
 
-void projectGoalToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
-	Matrix* scaledMatrix = scaleMatrix(level->goalMatrix, scale, scale, scale);
+// pass in null ScreenCoord* location need to free afterward
+void getCoordsFromRawMatrix(Matrix* pointsMatrix, ScreenCoord** coords, int pointsNum, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	Matrix* scaledMatrix = scaleMatrix(pointsMatrix, scale, scale, scale);
 	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
 	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
 	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
@@ -13,12 +14,19 @@ void projectGoalToBuffer(Level* level, Buffer* buffer, double scale, double rotX
 	free_matrix(rotatedMatrixAxisZ);
 	free_matrix(translatedMatrix);
 	
-	ScreenCoord coords[GOALPOINTSNUM];
+	*coords = malloc(sizeof(ScreenCoord)*pointsNum);
 	
-	for (int i = 0; i < GOALPOINTSNUM; i++) {
+	for (int i = 0; i < pointsNum; i++) {
 		struct ScreenCoord coord = getCoordFromMatrix(i, LCD_Width, LCD_Height, projectedMatrix);
-		coords[i] = coord;
+		(*coords)[i] = coord;
 	}
+	
+	free_matrix(projectedMatrix);
+}
+
+void projectGoalToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	ScreenCoord* coords;
+	getCoordsFromRawMatrix(level->goalMatrix, &coords, GOALPOINTSNUM, scale, rotX, rotZ, tZ, fov, near, far);
 	
 	for (int pointIndex = 0; pointIndex < GOALPOINTSNUM-1; pointIndex++) {
 		Buffer_DrawLine(coords[pointIndex].x, coords[pointIndex].y, coords[pointIndex+1].x, coords[pointIndex+1].y, buffer, LCD_COLOR_DARKMAGENTA);
@@ -29,89 +37,39 @@ void projectGoalToBuffer(Level* level, Buffer* buffer, double scale, double rotX
 	Buffer_DrawLine(coords[0].x, coords[0].y, coords[2].x, coords[2].y, buffer, LCD_COLOR_DARKMAGENTA);
 	Buffer_DrawLine(coords[1].x, coords[1].y, coords[3].x, coords[3].y, buffer, LCD_COLOR_DARKMAGENTA);
 	
-	free_matrix(projectedMatrix);
+	free(coords);
 }
 
 void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	// level screen coord must be freed first
-	Matrix* scaledMatrix = scaleMatrix(level->floorMatrix, scale, scale, scale);
-	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
-	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
-	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
-	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
-	processProjectedMatrix(projectedMatrix);
-	
-	free_matrix(scaledMatrix);
-	free_matrix(rotatedMatrixAxisX);
-	free_matrix(rotatedMatrixAxisZ);
-	free_matrix(translatedMatrix);
-
-	ScreenCoord* coords = malloc(sizeof(ScreenCoord) * level->floorPointsNum);
-	
-	for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
-		struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
-		coords[columnIndex] = coord;
-	}
+	ScreenCoord* coords;
+	getCoordsFromRawMatrix(level->floorMatrix, &coords, level->floorPointsNum, scale, rotX, rotZ, tZ, fov, near, far);
 	
 	for (int pointIndex = 0; pointIndex < level->floorPointsNum-1; pointIndex++) {
 		Buffer_DrawLine(coords[pointIndex].x, coords[pointIndex].y, coords[pointIndex+1].x, coords[pointIndex+1].y, buffer, WHITE);
 	}
 	
 	free(coords);
-	free_matrix(projectedMatrix);
 }
 
 void projectLevelFixToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	if (level->fixPairsCount == 0) return;
-	Matrix* scaledMatrix = scaleMatrix(level->fixMatrix, scale, scale, scale);
-	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
-	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
-	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
-	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
-	processProjectedMatrix(projectedMatrix);
-	
-	free_matrix(scaledMatrix);
-	free_matrix(rotatedMatrixAxisX);
-	free_matrix(rotatedMatrixAxisZ);
-	free_matrix(translatedMatrix);
-	
-	ScreenCoord* coords = malloc(sizeof(ScreenCoord) * level->fixPairsCount*2);
-	
-	for (int columnIndex = 0; columnIndex < projectedMatrix->cols; columnIndex++) {
-		struct ScreenCoord coord = getCoordFromMatrix(columnIndex, LCD_Width, LCD_Height, projectedMatrix);
-		coords[columnIndex] = coord;
-	}
+	ScreenCoord* coords;
+	getCoordsFromRawMatrix(level->fixMatrix, &coords, level->fixPairsCount*2, scale, rotX, rotZ, tZ, fov, near, far);
+
 	
 	for (int pairIndex = 0; pairIndex < level->fixPairsCount; pairIndex++) {
 		Buffer_DrawLine(coords[pairIndex*2].x, coords[pairIndex*2].y, coords[pairIndex*2+1].x, coords[pairIndex*2+1].y, buffer, BLACK);
 	}
 	
 	free(coords);
-	free_matrix(projectedMatrix);
 }
+
 void projectLevelButtonToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	if (level->buttonCount == 0) return;
-	Matrix* scaledMatrix = scaleMatrix(level->buttons->levelButtonMatrix, scale, scale, scale);
-	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
-	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
-	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
-	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
-	processProjectedMatrix(projectedMatrix);
-	
-	free_matrix(scaledMatrix);
-	free_matrix(rotatedMatrixAxisX);
-	free_matrix(rotatedMatrixAxisZ);
-	free_matrix(translatedMatrix);
-	
-//	debugText(level->buttonCount);
-	
-	ScreenCoord* coords = malloc(sizeof(ScreenCoord) * level->buttonCount * 4);
-	
-	for (int i = 0; i < level->buttonCount*4; i++) {
-		*(coords+i) = getCoordFromMatrix(i, LCD_Width, LCD_Height, projectedMatrix);
-//		debugText((*(coords+i)).x);
-//		debugText((*(coords+i)).y);
-	}
+	ScreenCoord* coords;
+	getCoordsFromRawMatrix(level->buttons->levelButtonMatrix, &coords, level->buttonCount*4, scale, rotX, rotZ, tZ, fov, near, far);
+
 	// one button has 4 points
 	for (int buttonIndex = 0; buttonIndex < level->buttonCount; buttonIndex++) {
 //		LCD_DrawLine((coords+4*buttonIndex+0)->x, (coords+4*buttonIndex+0)->y, (coords+4*buttonIndex+2)->x, (coords+4*buttonIndex+2)->y);
@@ -121,35 +79,12 @@ void projectLevelButtonToBuffer(Level* level, Buffer* buffer, double scale, doub
 	}
 	
 	free(coords);
-	
-
-	
-	// button triggered floor
-	
-	free_matrix(projectedMatrix);
 }
 void projectButtonTriggeredFloorToBuffer(LevelButton* button, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
-	// assume there is only one button
+	// fixme: assume there is only one button
 	// fixed level->buttons->levelTriggerFloorMatrix
-	Matrix* scaledMatrix = scaleMatrix(button->levelTriggerFloorMatrix, scale, scale, scale);
-	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
-	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
-	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
-	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
-	processProjectedMatrix(projectedMatrix);
-	
-	free_matrix(scaledMatrix);
-	free_matrix(rotatedMatrixAxisX);
-	free_matrix(rotatedMatrixAxisZ);
-	free_matrix(translatedMatrix);
-	
-	ScreenCoord* coords = malloc(sizeof(ScreenCoord) * button->floorCount * 4);
-	
-	for (int i = 0; i < button->floorCount*4; i++) {
-		*(coords+i) = getCoordFromMatrix(i, LCD_Width, LCD_Height, projectedMatrix);
-//		debugText((*(coords+i)).x);
-//		debugText((*(coords+i)).y);
-	}
+	ScreenCoord* coords;
+	getCoordsFromRawMatrix(button->levelTriggerFloorMatrix, &coords, button->floorCount*4, scale, rotX, rotZ, tZ, fov, near, far);
 	
 	for (int floorIndex = 0; floorIndex < button->floorCount; floorIndex++) {
 //		LCD_DrawLine((coords+4*floorIndex+0)->x, (coords+4*floorIndex+0)->y, (coords+4*floorIndex+2)->x, (coords+4*floorIndex+2)->y);
@@ -161,7 +96,6 @@ void projectButtonTriggeredFloorToBuffer(LevelButton* button, Buffer* buffer, do
 	}
 	
 	free(coords);
-	free_matrix(projectedMatrix);
 }
 
 void projectLevelAllButtonTriggeredFloorToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
@@ -170,6 +104,7 @@ void projectLevelAllButtonTriggeredFloorToBuffer(Level* level, Buffer* buffer, d
 			projectButtonTriggeredFloorToBuffer(level->buttons+levelButtonIndex, buffer, scale, rotX, rotZ, tZ, fov, near, far);
 	}
 }
+
 
 void standToLayLeft(RectPlayer* player, Matrix** translatedMatrixXY);
 void layLeftToStand(RectPlayer* player, Matrix** translatedMatrixXY);
@@ -290,6 +225,10 @@ void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale,
 	player->aniAngleProcess -= 2;
 	if (player->aniAngleProcess < 0) player->aniAngleProcess = 0;
 }
+
+/* -------------------------------------
+// player rect private functions
+---------------------------------------- */
 
 void standToLayLeft(RectPlayer* player, Matrix** translatedMatrixXY) { // lay left pos
 		Matrix* laydownMatrixY = rotateMatrixAxisY(player->modelMatrix, -(90-player->aniAngleProcess)/360.0*2.0*M_PI);
