@@ -227,10 +227,5 @@ void freeLevel(Level* level) {
 	free(level);
 }
 
-void projectLevelAllButtonTriggeredFloorToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
-	for (int levelButtonIndex = 0; levelButtonIndex < level->buttonCount; levelButtonIndex++) {
-		if ((level->buttons+levelButtonIndex)->isOn)
-			projectButtonTriggeredFloorToBuffer(level->buttons+levelButtonIndex, buffer, scale, rotX, rotZ, tZ, fov, near, far);
-	}
-}
+
 

@@ -4,6 +4,7 @@
 #include "user_defined.h"	// for delay_ms(wait_ms)
 #include <limits.h>
 #include <stdio.h>
+#include "projectToBuffer.h"
 
 void renderingSpinningPlayer(RectPlayer* player, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
 

@@ -519,6 +519,11 @@
               <FileType>1</FileType>
               <FilePath>.\Game\screenControlObject.c</FilePath>
             </File>
+            <File>
+              <FileName>projectToBuffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\projectToBuffer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1076,6 +1081,11 @@
               <FileName>screenControlObject.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Game\screenControlObject.c</FilePath>
+            </File>
+            <File>
+              <FileName>projectToBuffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\projectToBuffer.c</FilePath>
             </File>
           </Files>
         </Group>

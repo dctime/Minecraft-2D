@@ -20,6 +20,7 @@
 ".\objects\levelbutton.o"
 ".\objects\mainmenu.o"
 ".\objects\screencontrolobject.o"
+".\objects\projecttobuffer.o"
 ".\objects\ai_func.o"
 ".\objects\digit_cnn.o"
 ".\objects\digit_cnn_data.o"

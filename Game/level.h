@@ -37,6 +37,4 @@ bool posWinning(Level* level, int x1, int x2, int y1, int y2);
 Level* initLevel();
 void freeLevel(Level* level);
 
-void projectLevelAllButtonTriggeredFloorToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
-
 #endif
