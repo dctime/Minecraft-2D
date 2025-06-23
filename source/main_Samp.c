@@ -48,12 +48,15 @@ void generateLevel1(Level* level);
 void generateLevel2(Level* level);
 
 typedef void(*genLevelFunc)(Level*);	
+
 genLevelFunc levelNumToFunc(int n) {
 	switch(n) {
 		case 1:
 			return generateLevel1;
 		case 2:
 			return generateLevel2;
+		case 3:
+			return generateLevel3;
 		default:
 			return generateLevel1;
 	}
@@ -93,6 +96,7 @@ int main(void)
 	while(1) {
 		resetTotalUsedStep();
 		showMainMenu();
+		while(!play(levelNumToFunc(3)));
 		while(!play(levelNumToFunc(1)));
 		while(!play(levelNumToFunc(2)));
 		youWinScreen();

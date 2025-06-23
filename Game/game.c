@@ -106,10 +106,10 @@ bool play(void (*genLevelFunc)(Level*)) {
 	initButton(&rightButton, rightButtonTrigger);
 	initScreenControlObject(&screenControlObject);
 	
-	RectPlayer player;
-	initPlayer(&player, -2, 0);
-	
 	genLevelFunc(level);
+	
+	RectPlayer player;
+	initPlayer(&player, level->playerStartLocX, level->playerStartLocY);
 	
 	double worldRotX = -60;
 	int touchX;
@@ -141,6 +141,7 @@ bool play(void (*genLevelFunc)(Level*)) {
 		clearBuffer(BLACK, buffer, NULL);
 		
 		projectLevelToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
+		projectFragileToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectLevelFixToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectGoalToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);
 		projectLevelButtonToBuffer(level, buffer, 0.5, worldRotX, screenControlObject.screenRotZDeg, -8, 50, 0.1, 100.0);

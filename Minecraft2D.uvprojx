@@ -479,11 +479,6 @@
               <FileType>1</FileType>
               <FilePath>.\MatrixLib\dctimegl.c</FilePath>
             </File>
-            <File>
-              <FileName>level.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Game\level.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -523,6 +518,11 @@
               <FileName>projectToBuffer.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Game\projectToBuffer.c</FilePath>
+            </File>
+            <File>
+              <FileName>level.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\level.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1042,11 +1042,6 @@
               <FileType>1</FileType>
               <FilePath>.\MatrixLib\dctimegl.c</FilePath>
             </File>
-            <File>
-              <FileName>level.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\Game\level.c</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -1086,6 +1081,11 @@
               <FileName>projectToBuffer.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Game\projectToBuffer.c</FilePath>
+            </File>
+            <File>
+              <FileName>level.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\level.c</FilePath>
             </File>
           </Files>
         </Group>

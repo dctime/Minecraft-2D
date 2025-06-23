@@ -1,28 +1,6 @@
 #include "projectToBuffer.h"
 
-// pass in null ScreenCoord* location need to free afterward
-void getCoordsFromRawMatrix(Matrix* pointsMatrix, ScreenCoord** coords, int pointsNum, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
-	Matrix* scaledMatrix = scaleMatrix(pointsMatrix, scale, scale, scale);
-	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
-	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
-	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
-	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
-	processProjectedMatrix(projectedMatrix);
-	
-	free_matrix(scaledMatrix);
-	free_matrix(rotatedMatrixAxisX);
-	free_matrix(rotatedMatrixAxisZ);
-	free_matrix(translatedMatrix);
-	
-	*coords = malloc(sizeof(ScreenCoord)*pointsNum);
-	
-	for (int i = 0; i < pointsNum; i++) {
-		struct ScreenCoord coord = getCoordFromMatrix(i, LCD_Width, LCD_Height, projectedMatrix);
-		(*coords)[i] = coord;
-	}
-	
-	free_matrix(projectedMatrix);
-}
+void getCoordsFromRawMatrix(Matrix* pointsMatrix, ScreenCoord** coords, int pointsNum, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far);
 
 void projectGoalToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	ScreenCoord* coords;
@@ -52,6 +30,19 @@ void projectLevelToBuffer(Level* level, Buffer* buffer, double scale, double rot
 	free(coords);
 }
 
+void projectFragileToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	if (level->fragilePointsNum == 0) return;
+	// level screen coord must be freed first
+	ScreenCoord* coords;
+	getCoordsFromRawMatrix(level->fragileMatrix, &coords, level->fragilePointsNum, scale, rotX, rotZ, tZ, fov, near, far);
+	
+	for (int pointIndex = 0; pointIndex < level->fragilePointsNum-1; pointIndex++) {
+		Buffer_DrawLine(coords[pointIndex].x, coords[pointIndex].y, coords[pointIndex+1].x, coords[pointIndex+1].y, buffer, ORANGE);
+	}
+	
+	free(coords);
+}
+
 void projectLevelFixToBuffer(Level* level, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	if (level->fixPairsCount == 0) return;
 	ScreenCoord* coords;
@@ -60,6 +51,10 @@ void projectLevelFixToBuffer(Level* level, Buffer* buffer, double scale, double 
 	
 	for (int pairIndex = 0; pairIndex < level->fixPairsCount; pairIndex++) {
 		Buffer_DrawLine(coords[pairIndex*2].x, coords[pairIndex*2].y, coords[pairIndex*2+1].x, coords[pairIndex*2+1].y, buffer, BLACK);
+		Buffer_DrawLine(coords[pairIndex*2].x+1, coords[pairIndex*2].y+1, coords[pairIndex*2+1].x+1, coords[pairIndex*2+1].y+1, buffer, BLACK);
+		Buffer_DrawLine(coords[pairIndex*2].x+1, coords[pairIndex*2].y-1, coords[pairIndex*2+1].x+1, coords[pairIndex*2+1].y-1, buffer, BLACK);
+		Buffer_DrawLine(coords[pairIndex*2].x-1, coords[pairIndex*2].y+1, coords[pairIndex*2+1].x-1, coords[pairIndex*2+1].y+1, buffer, BLACK);
+		Buffer_DrawLine(coords[pairIndex*2].x-1, coords[pairIndex*2].y-1, coords[pairIndex*2+1].x-1, coords[pairIndex*2+1].y-1, buffer, BLACK);
 	}
 	
 	free(coords);
@@ -80,6 +75,8 @@ void projectLevelButtonToBuffer(Level* level, Buffer* buffer, double scale, doub
 	
 	free(coords);
 }
+
+
 void projectButtonTriggeredFloorToBuffer(LevelButton* button, Buffer* buffer, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
 	// fixme: assume there is only one button
 	// fixed level->buttons->levelTriggerFloorMatrix
@@ -224,6 +221,30 @@ void projectPlayerRectToBuffer(RectPlayer* player, Buffer* buffer, double scale,
 	free_matrix(projectedMatrix);
 	player->aniAngleProcess -= 2;
 	if (player->aniAngleProcess < 0) player->aniAngleProcess = 0;
+}
+
+// pass in null ScreenCoord* location need to free afterward
+void getCoordsFromRawMatrix(Matrix* pointsMatrix, ScreenCoord** coords, int pointsNum, double scale, double rotX, double rotZ, double tZ, double fov, double near, double far) {
+	Matrix* scaledMatrix = scaleMatrix(pointsMatrix, scale, scale, scale);
+	Matrix* rotatedMatrixAxisZ = rotateMatrixAxisZ(scaledMatrix, rotZ/360.0*2.0*M_PI);
+	Matrix* rotatedMatrixAxisX = rotateMatrixAxisX(rotatedMatrixAxisZ, rotX/360.0*2.0*M_PI);
+	Matrix* translatedMatrix = translateMatrix(rotatedMatrixAxisX, 0, 0, tZ);
+	Matrix* projectedMatrix = projectMatrix(translatedMatrix, fov/360.0*2.0*M_PI, LCD_Width/(double)LCD_Height, near, far);
+	processProjectedMatrix(projectedMatrix);
+	
+	free_matrix(scaledMatrix);
+	free_matrix(rotatedMatrixAxisX);
+	free_matrix(rotatedMatrixAxisZ);
+	free_matrix(translatedMatrix);
+	
+	*coords = malloc(sizeof(ScreenCoord)*pointsNum);
+	
+	for (int i = 0; i < pointsNum; i++) {
+		struct ScreenCoord coord = getCoordFromMatrix(i, LCD_Width, LCD_Height, projectedMatrix);
+		(*coords)[i] = coord;
+	}
+	
+	free_matrix(projectedMatrix);
 }
 
 /* -------------------------------------
