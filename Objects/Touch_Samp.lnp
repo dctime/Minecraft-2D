@@ -19,6 +19,7 @@
 ".\objects\uibutton.o"
 ".\objects\levelbutton.o"
 ".\objects\mainmenu.o"
+".\objects\screencontrolobject.o"
 ".\objects\ai_func.o"
 ".\objects\digit_cnn.o"
 ".\objects\digit_cnn_data.o"

@@ -6,26 +6,12 @@
 #include "playerRect.h"
 #include "level.h"
 
-
-
 #define BUTTON_WIDTH 60
 #define BUTTON_HEIGHT 30
 
 #define M_PI 3.14159265358979323846
 
 struct RectPlayer;
-
-typedef struct ScreenControlObject {
-		// private
-	bool isTouchingScreenLastTick;
-	bool firstTickOnScreen;
-	int lastTouchX;
-	int lastTouchY;
-	// public
-	bool isHolding;
-	bool triggered;
-	int screenRotZDeg;
-} ScreenControlObject;
 
 Level* initLevel();
 void freeLevel(Level* level);

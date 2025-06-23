@@ -514,6 +514,11 @@
               <FileType>1</FileType>
               <FilePath>.\Game\mainMenu.c</FilePath>
             </File>
+            <File>
+              <FileName>screenControlObject.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\screenControlObject.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1066,6 +1071,11 @@
               <FileName>mainMenu.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Game\mainMenu.c</FilePath>
+            </File>
+            <File>
+              <FileName>screenControlObject.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Game\screenControlObject.c</FilePath>
             </File>
           </Files>
         </Group>
