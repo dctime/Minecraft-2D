@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file    digit_cnn_config.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2025-06-22T21:27:45+0800
+  * @date    2025-06-24T23:09:50+0800
   * @brief   AI Tool Automatic Code Generator for Custom Layers Implementation
   ******************************************************************************
   * @attention

@@ -182,7 +182,8 @@ void drawShapeScreen() {
 	uint8_t idx = 0;
 	uint8_t collected = 0;
 
-	while (1) {
+	key1Triggered = 0;
+	while (!key1Triggered) {
 		TS_GetState(&tsState);
 		buttonTick(&button, &tsState, NULL, NULL);
 		renderButtonImmediatelyLCD(&button);
@@ -222,12 +223,7 @@ void drawShapeScreen() {
 		/* ------------------------------------
 		// AI stuff
 		----------------------------------*/
-		
-
-			
-			
 	}
-	
 	free_cnn();
 }
 

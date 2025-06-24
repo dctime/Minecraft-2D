@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    digit_cnn.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2025-06-22T21:27:45+0800
+  * @date    2025-06-24T23:09:50+0800
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * @attention
@@ -23,7 +23,7 @@
 
 /******************************************************************************/
 #define AI_DIGIT_CNN_MODEL_NAME          "digit_cnn"
-#define AI_DIGIT_CNN_ORIGIN_MODEL_NAME   "shape_model"
+#define AI_DIGIT_CNN_ORIGIN_MODEL_NAME   "shape_model_lite"
 
 /******************************************************************************/
 #define AI_DIGIT_CNN_ACTIVATIONS_ALIGNMENT   (4)

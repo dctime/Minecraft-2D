@@ -2,7 +2,7 @@
   ******************************************************************************
   * @file    digit_cnn_data_params.h
   * @author  AST Embedded Analytics Research Platform
-  * @date    2025-06-22T21:27:45+0800
+  * @date    2025-06-24T23:09:50+0800
   * @brief   AI Tool Automatic Code Generator for Embedded NN computing
   ******************************************************************************
   * Copyright (c) 2025 STMicroelectronics.
@@ -28,18 +28,18 @@
 
 
 #define AI_DIGIT_CNN_DATA_ACTIVATIONS_SIZES \
-  { 4352, }
-#define AI_DIGIT_CNN_DATA_ACTIVATIONS_SIZE     (4352)
+  { 8372, }
+#define AI_DIGIT_CNN_DATA_ACTIVATIONS_SIZE     (8372)
 #define AI_DIGIT_CNN_DATA_ACTIVATIONS_COUNT    (1)
-#define AI_DIGIT_CNN_DATA_ACTIVATION_1_SIZE    (4352)
+#define AI_DIGIT_CNN_DATA_ACTIVATION_1_SIZE    (8372)
 
 
 
 #define AI_DIGIT_CNN_DATA_WEIGHTS_SIZES \
-  { 14412, }
-#define AI_DIGIT_CNN_DATA_WEIGHTS_SIZE         (14412)
+  { 30860, }
+#define AI_DIGIT_CNN_DATA_WEIGHTS_SIZE         (30860)
 #define AI_DIGIT_CNN_DATA_WEIGHTS_COUNT        (1)
-#define AI_DIGIT_CNN_DATA_WEIGHT_1_SIZE        (14412)
+#define AI_DIGIT_CNN_DATA_WEIGHT_1_SIZE        (30860)
 
 
 
