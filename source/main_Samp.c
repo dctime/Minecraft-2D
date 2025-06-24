@@ -11,6 +11,7 @@
 #include "mainMenu.h"
 #include "level.h"
 #include "ai_func.h"
+#include "uiButton.h"
 
 #define LCD_Width 320
 #define LCD_Height 240
@@ -85,14 +86,6 @@ int main(void)
 	
 	resetButton1Setup();
 	
-	// AI Test
-	if (!init_cnn()) {
-		while(1);
-	}
-	
-	run_cnn((float*)input_image);
-	free_cnn();
-	
 //	Touchscreen_Calibration();
 	while(1) {
 		resetTotalUsedStep();
@@ -113,10 +106,74 @@ bool inDrawingPanel(int x, int y, int x0, int y0, int width, int height) {
 	return true;
 }
 
+void checkShapeButtonTrigger(RectPlayer* player, Level* level) {
+	LCD_SaveColors();
+	LCD_SetTextColor(BLACK);
+	LCD_FillRect(LCD_Width/2-168/2+1, 1, 168, 168);
+	LCD_RestoreColors();
+}
+
+void aistuff() {
+	// player and level is null
+		int width = 168;
+		int height = 168;
+		float inputImage[28][28];
+	
+		uint8_t* drawImage = malloc(2 * width * height);
+		LCD_ReadRGBImage(LCD_Width/2-168/2+1, 1, width, height, drawImage);
+		//	LCD_Clear(BLACK);
+		//	LCD_DrawRGBImage(0, 0, width, height, drawImage);
+	
+		for (int smallImageX = 0; smallImageX < 28; smallImageX++) {
+			for (int smallImageY = 0; smallImageY < 28; smallImageY++) {
+				int sum = 0;
+				for (int largePartialImageX = 0; largePartialImageX < 6; largePartialImageX++) {
+					for (int largePartialImageY = 0; largePartialImageY < 6; largePartialImageY++) {
+						int largeImageX = 6*smallImageX+largePartialImageX;
+						int largeImageY = 6*smallImageY+largePartialImageY;
+						sum += 1&*((drawImage+(168*largeImageY+largeImageX)*2)); // check if white
+		//					LCD_DrawPixel(largeImageX, largeImageY, *((drawImage+(168*largeImageY+largeImageX)*2)) + 0x10* *((drawImage+(168*largeImageY+largeImageX)*2+1)));
+						
+					}
+				}
+		//			LCD_DrawRect(LCD_Width/2-168/2+6*smallImageX, 6*smallImageY, 6, 6);
+				if (sum > 1) {
+					inputImage[smallImageY][smallImageX] = 1;
+				} else {
+					inputImage[smallImageY][smallImageX] = 0;
+				}
+					
+//				inputImage[smallImageY][smallImageX] = sum/36.0;
+			}
+		}
+
+		free(drawImage);
+
+		for (int smallImageX = 0; smallImageX < 28; smallImageX++) {
+			for (int smallImageY = 0; smallImageY < 28; smallImageY++) {
+				LCD_DrawPixel(smallImageX, smallImageY, inputImage[smallImageY][smallImageX] * 255); // blue
+			}
+		}
+
+		float probCircle, probSquare, probTriangle;
+
+
+		run_cnn((float*)inputImage, &probCircle, &probSquare, &probTriangle);
+
+		char c[50];
+		sprintf(c, "C:%f, R:%f, T:%f", probCircle, probSquare, probTriangle);
+		LCD_SetFont(&Font12);
+		LCD_DisplayStringAt(0, LCD_Height-60, c, LEFT_MODE);
+}
+
 void drawShapeScreen() {
+	init_cnn();
+	
+	Button button = {.x0=LCD_Width/2-BUTTON_WIDTH/2, .y0=LCD_Height-BUTTON_HEIGHT, .wX=BUTTON_WIDTH, .wY=BUTTON_HEIGHT};
+	initButton(&button, checkShapeButtonTrigger);
 	LCD_Clear(BLACK);
 	LCD_SetTextColor(WHITE);
-	LCD_DrawRect(LCD_Width/2-168/2, 0, 168, 168);
+	LCD_DrawRect(LCD_Width/2-168/2, 0, 170, 170);
 
 	TS_StateTypeDef tsState;
 	uint16_t lastX = 0xFFFF, lastY = 0xFFFF;
@@ -127,8 +184,10 @@ void drawShapeScreen() {
 
 	while (1) {
 		TS_GetState(&tsState);
+		buttonTick(&button, &tsState, NULL, NULL);
+		renderButtonImmediatelyLCD(&button);
 		
-		if (tsState.TouchDetected && inDrawingPanel(tsState.x, tsState.y, LCD_Width/2-168/2, 0, 168, 168)) {
+		if (tsState.TouchDetected && inDrawingPanel(tsState.x, tsState.y, LCD_Width/2-168/2+1, 1, 168, 168)) {
 			// Collect new sample
 			xs[idx] = tsState.x;
 			ys[idx] = tsState.y;
@@ -158,8 +217,18 @@ void drawShapeScreen() {
 			idx = 0;
 			lastX = 0xFFFF;
 			lastY = 0xFFFF;
+			aistuff();
 		}
+		/* ------------------------------------
+		// AI stuff
+		----------------------------------*/
+		
+
+			
+			
 	}
+	
+	free_cnn();
 }
 
 void youWinScreen() {

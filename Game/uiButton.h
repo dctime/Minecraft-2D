@@ -26,6 +26,7 @@ void upButtonTrigger(RectPlayer* player, Level* level);
 void downButtonTrigger(RectPlayer* player, Level* level);
 void leftButtonTrigger(RectPlayer* player, Level* level);
 void rightButtonTrigger(RectPlayer* player, Level* level);
+void renderButtonImmediatelyLCD(Button* button);
 
 
 #endif

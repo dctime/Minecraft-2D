@@ -31,32 +31,18 @@ bool init_cnn() {
     return true;
 }
 
-int run_cnn(float* image28x28) {
+void run_cnn(float* image28x28, float* probCircle, float* probSquare, float* probTriangle) {
     // Copy input
     g_inputs[0].data = image28x28;
 
     // Run inference
-    if (ai_digit_cnn_run(g_network, g_inputs, g_outputs) != 1) return -1;
+    if (ai_digit_cnn_run(g_network, g_inputs, g_outputs) != 1) {while(1);}
 
     float* output = (float*)g_outputs[0].data;
     int max_index = 0;
-		float circlePro = output[0];
-		float squarePro = output[1];
-		float trianglePro = output[2];
-	
-		char c[30];
-		LCD_SetFont(&Font12);
-		sprintf(c, "%f, %f, %f", circlePro, squarePro, trianglePro);
-		LCD_DisplayStringAt(0, 0, c, LEFT_MODE);
-	
-    float max_value = output[0];
-    for (int i = 1; i < 3; ++i) {
-        if (output[i] > max_value) {
-            max_value = output[i];
-            max_index = i;
-        }
-    }
-    return max_index;
+		*probCircle = output[0];
+		*probSquare = output[1];
+		*probTriangle = output[2];
 }
 
 void free_cnn() {

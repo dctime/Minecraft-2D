@@ -6,4 +6,4 @@
   GLCD\stm324xg_lcd_sklin.h GLCD\.\Fonts\fonts.h \
   User_common\user_defined.h SPI_touch\touch_module.h GLCD\dctime_lcd.h \
   MatrixLib\matrix.h MatrixLib\dctimegl.h Game\game.h Game\playerRect.h \
-  Game\level.h Game\mainMenu.h AI\ai_func.h
+  Game\level.h Game\mainMenu.h AI\ai_func.h Game\uiButton.h

@@ -35,7 +35,7 @@ float input_image[28][28] = {
 };
 
 bool init_cnn();
-int run_cnn(float* image28x28);
+void run_cnn(float* image28x28, float* probCircle, float* probSquare, float* probTriangle);
 void free_cnn();
 
 #endif

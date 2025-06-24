@@ -22,6 +22,21 @@ void buttonToBuffer(Button* button, Buffer* buffer) {
 	
 }
 
+void renderButtonImmediatelyLCD(Button* button) {
+	LCD_SaveColors();
+	if (button->triggered) {
+		LCD_SetTextColor(BLACK);
+		LCD_FillRect(button->x0, button->y0, button->wX, button->wY);
+	} else if (button->isHolding) {
+		LCD_SetTextColor(DARKGRAY);
+		LCD_FillRect(button->x0, button->y0, button->wX, button->wY);
+	} else {
+		LCD_SetTextColor(GRAY);
+		LCD_FillRect(button->x0, button->y0, button->wX, button->wY);
+	}
+	LCD_RestoreColors();
+}
+
 void buttonTick(Button* button, TS_StateTypeDef* state, RectPlayer* player, Level* level) {
 	button->triggered = false;
 	if (state->TouchDetected) {
@@ -43,7 +58,7 @@ void buttonTick(Button* button, TS_StateTypeDef* state, RectPlayer* player, Leve
 	} else {
 		button->isHolding = false;
 		if (button->firstTickInButton) {
-			if (inRect(button->lastTouchX, button->lastTouchY, button->x0, button->y0, button->wX, button->wY) && player->aniAngleProcess == 0) {
+			if (inRect(button->lastTouchX, button->lastTouchY, button->x0, button->y0, button->wX, button->wY) && (player == NULL || player->aniAngleProcess == 0)) {
 				button->triggerFunc(player, level);
 				button->triggered = true;
 			}

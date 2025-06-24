@@ -1,4 +1,4 @@
---cpu=Cortex-M4.fp.sp
+--cpu=Cortex-M4.fp.sp --lto
 ".\objects\hardwaresystem_ini.o"
 ".\objects\user_defined.o"
 ".\objects\stm32f4xx_fsmc.o"
