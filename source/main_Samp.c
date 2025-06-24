@@ -68,6 +68,7 @@ void youWinScreen();
 
 extern volatile bool key1Triggered;
 float input_image[28][28];
+void drawShapeScreen();
 
 int main(void)
 {
@@ -96,10 +97,68 @@ int main(void)
 	while(1) {
 		resetTotalUsedStep();
 		showMainMenu();
+		drawShapeScreen();
 		while(!play(levelNumToFunc(3)));
 		while(!play(levelNumToFunc(1)));
 		while(!play(levelNumToFunc(2)));
 		youWinScreen();
+	}
+}
+
+static TS_StateTypeDef tsState;
+
+bool inDrawingPanel(int x, int y, int x0, int y0, int width, int height) {
+	if (x < x0 || x > x0 + width) return false;
+	if (y < y0 || y > y0 + height) return false;
+	return true;
+}
+
+void drawShapeScreen() {
+	LCD_Clear(BLACK);
+	LCD_SetTextColor(WHITE);
+	LCD_DrawRect(LCD_Width/2-168/2, 0, 168, 168);
+
+	TS_StateTypeDef tsState;
+	uint16_t lastX = 0xFFFF, lastY = 0xFFFF;
+	const uint8_t sampleCount = 5;
+	uint16_t xs[sampleCount], ys[sampleCount];
+	uint8_t idx = 0;
+	uint8_t collected = 0;
+
+	while (1) {
+		TS_GetState(&tsState);
+		
+		if (tsState.TouchDetected && inDrawingPanel(tsState.x, tsState.y, LCD_Width/2-168/2, 0, 168, 168)) {
+			// Collect new sample
+			xs[idx] = tsState.x;
+			ys[idx] = tsState.y;
+			idx = (idx + 1) % sampleCount;
+			if (collected < sampleCount) collected++;
+
+			// Compute average only if enough samples
+			if (collected >= sampleCount) {
+				uint32_t sumX = 0, sumY = 0;
+				for (int i = 0; i < sampleCount; i++) {
+					sumX += xs[i];
+					sumY += ys[i];
+				}
+				uint16_t avgX = sumX / sampleCount;
+				uint16_t avgY = sumY / sampleCount;
+
+				// there is difference (no redraw)
+				if (abs(avgX - lastX) > 2 || abs(avgY - lastY) > 2) {
+					LCD_FillCircle(avgX, avgY, 2);
+					lastX = avgX;
+					lastY = avgY;
+				}
+			}
+		} else {
+			// Reset state if touch released
+			collected = 0;
+			idx = 0;
+			lastX = 0xFFFF;
+			lastY = 0xFFFF;
+		}
 	}
 }
 
