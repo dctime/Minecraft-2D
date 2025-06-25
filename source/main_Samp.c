@@ -186,14 +186,18 @@ void aistuff() {
 		LCD_SetTextColor(BLACK);
 		LCD_FillRect(LCD_Width-60, 0, 60, 100);
 		LCD_SetTextColor(WHITE);
-		LCD_FillRect(LCD_Width-20, 0, 20, 100*probCircle);
+		LCD_FillRect(LCD_Width-20*3, 0, 20, 100*probCircle);
 		LCD_SetTextColor(WHITE);
 		LCD_FillRect(LCD_Width-20*2, 0, 20, 100*probSquare);
 		LCD_SetTextColor(WHITE);
-		LCD_FillRect(LCD_Width-20*3, 0, 20, 100*probTriangle);
+		LCD_FillRect(LCD_Width-20*1, 0, 20, 100*probTriangle);
+		LCD_SaveFont();
+		LCD_SetFont(&Font16);
+		LCD_DisplayStringAt(LCD_Width-60, 100, "C S T", LEFT_MODE);
+		LCD_RestoreFont();
 		
-		char c[50];
-		sprintf(c, "C:%f, R:%f, T:%f", probCircle, probSquare, probTriangle);
+		char c[56];
+		sprintf(c, "Draw a shape in mind to decide your fate!");
 		LCD_SetFont(&Font12);
 		LCD_DisplayStringAt(0, LCD_Height-60, c, LEFT_MODE);
 }
@@ -209,6 +213,7 @@ void drawShapeScreen() {
 	initButton(&toLevelButton, toLevel);
 	
 	LCD_Clear(BLACK);
+	aistuff();
 	LCD_SetTextColor(WHITE);
 	LCD_DrawRect(LCD_Width/2-168/2, 0, 170, 170);
 
