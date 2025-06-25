@@ -118,7 +118,7 @@ void generateLevel3(Level* level) {
 	
 	level->buttonCount = 0;
 	
-	level->fixPairsCount = 8;
+	level->fixPairsCount = 4;
 	level->fixMatrix = create_matrix(4, level->fixPairsCount*2);
 	float fixPointsTemp[8][2] = {
 		{-4, 1},
@@ -365,8 +365,11 @@ void freeLevel(Level* level) {
 	for (int buttonIndex = 0; buttonIndex < level->buttonCount; buttonIndex++) {
 		freeLevelButtonMatrices(level->buttons+buttonIndex);
 	}
-
-	free(level->buttons);
+	
+	if (level->buttonCount != 0) {
+		free(level->buttons);
+	}
+	
 	free_matrix(level->floorMatrix);
 	free_matrix(level->goalMatrix);
 	
@@ -377,6 +380,7 @@ void freeLevel(Level* level) {
 	if (level->fixPairsCount != 0) {
 		free_matrix(level->fixMatrix);
 	}
+	
 	free(level);
 }
 

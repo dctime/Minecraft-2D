@@ -81,7 +81,7 @@ void EXTI0_IRQHandler(void) {
 }
 
 bool play(void (*genLevelFunc)(Level*)) {
-	key1Triggered = false;
+	delay_ms(1000);
 	
 	Buffer* buffer = createBuffer();
 	Level* level = initLevel();

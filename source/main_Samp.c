@@ -52,11 +52,11 @@ typedef void(*genLevelFunc)(Level*);
 
 genLevelFunc levelNumToFunc(int n) {
 	switch(n) {
-		case 1:
+		case 0:
 			return generateLevel1;
-		case 2:
+		case 1:
 			return generateLevel2;
-		case 3:
+		case 2:
 			return generateLevel3;
 		default:
 			return generateLevel1;
@@ -70,6 +70,8 @@ void youWinScreen();
 extern volatile bool key1Triggered;
 float input_image[28][28];
 void drawShapeScreen();
+
+static int levelSequence[3];
 
 int main(void)
 {
@@ -91,9 +93,9 @@ int main(void)
 		resetTotalUsedStep();
 		showMainMenu();
 		drawShapeScreen();
-		while(!play(levelNumToFunc(3)));
-		while(!play(levelNumToFunc(1)));
-		while(!play(levelNumToFunc(2)));
+		while(!play(levelNumToFunc(levelSequence[0])));
+		while(!play(levelNumToFunc(levelSequence[1])));
+		while(!play(levelNumToFunc(levelSequence[2])));
 		youWinScreen();
 	}
 }
@@ -106,11 +108,35 @@ bool inDrawingPanel(int x, int y, int x0, int y0, int width, int height) {
 	return true;
 }
 
-void checkShapeButtonTrigger(RectPlayer* player, Level* level) {
+void clearDrawing(RectPlayer* player, Level* level) {
 	LCD_SaveColors();
 	LCD_SetTextColor(BLACK);
 	LCD_FillRect(LCD_Width/2-168/2+1, 1, 168, 168);
 	LCD_RestoreColors();
+}
+
+static float probCircle, probSquare, probTriangle;
+static int levelSequence[3];
+
+void toLevel(RectPlayer* player, Level* level) {
+	int firstLevel = (int)((probCircle+probSquare*10+probTriangle*100)*100) % 3;
+	int firstToSecond = (int)((probCircle+probSquare*10+probTriangle*100)*100) % 2 + 1;
+	int theOtherChoise;
+	if (firstToSecond == 1) {
+		theOtherChoise = 2;
+	} else {
+		theOtherChoise = 1;
+	}
+	
+	levelSequence[0] = firstLevel;
+	
+	int nextLevel = firstLevel + firstToSecond;
+	if (nextLevel >= 3) nextLevel -= 3;
+	levelSequence[1] = nextLevel;
+	
+	int lastLevel = firstLevel + theOtherChoise;
+	if (lastLevel >= 3) lastLevel -= 3;
+	levelSequence[2] = lastLevel;
 }
 
 void aistuff() {
@@ -155,11 +181,17 @@ void aistuff() {
 			}
 		}
 
-		float probCircle, probSquare, probTriangle;
-
-
 		run_cnn((float*)inputImage, &probCircle, &probSquare, &probTriangle);
-
+		
+		LCD_SetTextColor(BLACK);
+		LCD_FillRect(LCD_Width-60, 0, 60, 100);
+		LCD_SetTextColor(WHITE);
+		LCD_FillRect(LCD_Width-20, 0, 20, 100*probCircle);
+		LCD_SetTextColor(WHITE);
+		LCD_FillRect(LCD_Width-20*2, 0, 20, 100*probSquare);
+		LCD_SetTextColor(WHITE);
+		LCD_FillRect(LCD_Width-20*3, 0, 20, 100*probTriangle);
+		
 		char c[50];
 		sprintf(c, "C:%f, R:%f, T:%f", probCircle, probSquare, probTriangle);
 		LCD_SetFont(&Font12);
@@ -167,10 +199,15 @@ void aistuff() {
 }
 
 void drawShapeScreen() {
+	delay_ms(1000);
 	init_cnn();
 	
-	Button button = {.x0=LCD_Width/2-BUTTON_WIDTH/2, .y0=LCD_Height-BUTTON_HEIGHT, .wX=BUTTON_WIDTH, .wY=BUTTON_HEIGHT};
-	initButton(&button, checkShapeButtonTrigger);
+	Button clearButton = {.x0=LCD_Width/3-BUTTON_WIDTH/2, .y0=LCD_Height-BUTTON_HEIGHT, .wX=BUTTON_WIDTH, .wY=BUTTON_HEIGHT};
+	Button toLevelButton = {.x0=LCD_Width/3*2-BUTTON_WIDTH/2, .y0=LCD_Height-BUTTON_HEIGHT, .wX=BUTTON_WIDTH, .wY=BUTTON_HEIGHT};
+	
+	initButton(&clearButton, clearDrawing);
+	initButton(&toLevelButton, toLevel);
+	
 	LCD_Clear(BLACK);
 	LCD_SetTextColor(WHITE);
 	LCD_DrawRect(LCD_Width/2-168/2, 0, 170, 170);
@@ -181,14 +218,21 @@ void drawShapeScreen() {
 	uint16_t xs[sampleCount], ys[sampleCount];
 	uint8_t idx = 0;
 	uint8_t collected = 0;
-
+	
+	bool updateAI = false;
+	
 	key1Triggered = 0;
 	while (!key1Triggered) {
 		TS_GetState(&tsState);
-		buttonTick(&button, &tsState, NULL, NULL);
-		renderButtonImmediatelyLCD(&button);
+		buttonTick(&clearButton, &tsState, NULL, NULL);
+		buttonTick(&toLevelButton, &tsState, NULL, NULL);
+		renderButtonImmediatelyLCD(&clearButton);
+		renderButtonImmediatelyLCD(&toLevelButton);
+		
+		if (toLevelButton.triggered) break;
 		
 		if (tsState.TouchDetected && inDrawingPanel(tsState.x, tsState.y, LCD_Width/2-168/2+1, 1, 168, 168)) {
+			updateAI = true;
 			// Collect new sample
 			xs[idx] = tsState.x;
 			ys[idx] = tsState.y;
@@ -214,11 +258,16 @@ void drawShapeScreen() {
 			}
 		} else {
 			// Reset state if touch released
+			if (updateAI) {
+				aistuff();
+				updateAI = false;
+			}
+			
 			collected = 0;
 			idx = 0;
 			lastX = 0xFFFF;
 			lastY = 0xFFFF;
-			aistuff();
+			delay_ms(10);
 		}
 		/* ------------------------------------
 		// AI stuff

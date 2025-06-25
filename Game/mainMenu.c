@@ -61,6 +61,7 @@ void showMainMenu() {
 		
 		drawBuffer(buffer);
 	}
+	
 	key1Triggered = 0;
 	freePlayerModel(&player);
 	freeBuffer(buffer);
