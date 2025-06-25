@@ -118,25 +118,34 @@ void clearDrawing(RectPlayer* player, Level* level) {
 static float probCircle, probSquare, probTriangle;
 static int levelSequence[3];
 
+float shapeIndexToProb(int index) {
+	switch(index) {
+		case 0:
+			return probCircle;
+		case 1:
+			return probSquare;
+		case 2:
+			return probTriangle;
+		default:
+			return probCircle;
+	}
+}
+
 void toLevel(RectPlayer* player, Level* level) {
-	int firstLevel = (int)((probCircle+probSquare*10+probTriangle*100)*100) % 3;
-	int firstToSecond = (int)((probCircle+probSquare*10+probTriangle*100)*100) % 2 + 1;
-	int theOtherChoise;
-	if (firstToSecond == 1) {
-		theOtherChoise = 2;
-	} else {
-		theOtherChoise = 1;
+	int shapeIndexes[3] = {0, 1, 2};
+	for (int i = 0; i < 2; i++) {
+		for (int j = i; j < 2; j++) {
+			if (shapeIndexToProb(shapeIndexes[j]) > shapeIndexToProb(shapeIndexes[j+1])) {
+				int tempIndex = shapeIndexes[j];
+				shapeIndexes[j] = shapeIndexes[j+1];
+				shapeIndexes[j+1] = tempIndex;
+			}
+		}
 	}
 	
-	levelSequence[0] = firstLevel;
-	
-	int nextLevel = firstLevel + firstToSecond;
-	if (nextLevel >= 3) nextLevel -= 3;
-	levelSequence[1] = nextLevel;
-	
-	int lastLevel = firstLevel + theOtherChoise;
-	if (lastLevel >= 3) lastLevel -= 3;
-	levelSequence[2] = lastLevel;
+	levelSequence[0] = shapeIndexes[0];
+	levelSequence[1] = shapeIndexes[1];
+	levelSequence[2] = shapeIndexes[2];
 }
 
 void aistuff() {
@@ -197,7 +206,7 @@ void aistuff() {
 		LCD_RestoreFont();
 		
 		char c[56];
-		sprintf(c, "Draw a shape in mind to decide your fate!");
+		sprintf(c, "Draw a shape in mind to decide the level!");
 		LCD_SetFont(&Font12);
 		LCD_DisplayStringAt(0, LCD_Height-60, c, LEFT_MODE);
 }
