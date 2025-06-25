@@ -138,7 +138,7 @@ void toLevel(RectPlayer* player, Level* level) {
 			if (shapeIndexToProb(shapeIndexes[j]) > shapeIndexToProb(shapeIndexes[j+1])) {
 				int tempIndex = shapeIndexes[j];
 				shapeIndexes[j] = shapeIndexes[j+1];
-				shapeIndexes[j+1] = tempIndex;
+		?		shapeIndexes[j+1] = tempIndex;
 			}
 		}
 	}
