@@ -134,11 +134,11 @@ float shapeIndexToProb(int index) {
 void toLevel(RectPlayer* player, Level* level) {
 	int shapeIndexes[3] = {0, 1, 2};
 	for (int i = 0; i < 2; i++) {
-		for (int j = i; j < 2; j++) {
+		for (int j = 0; j < 2-i; j++) {
 			if (shapeIndexToProb(shapeIndexes[j]) > shapeIndexToProb(shapeIndexes[j+1])) {
 				int tempIndex = shapeIndexes[j];
 				shapeIndexes[j] = shapeIndexes[j+1];
-		?		shapeIndexes[j+1] = tempIndex;
+		 		shapeIndexes[j+1] = tempIndex;
 			}
 		}
 	}
@@ -290,7 +290,14 @@ void drawShapeScreen() {
 	free_cnn();
 }
 
+uint8_t RNG_Init();
+void RNG_Close();
+int RNG_Get_RandomRange(int min,int max);
+
 void youWinScreen() {
+	
+	RNG_Init();
+	
 	LCD_Clear(BLACK);
 	LCD_SaveFont();
 	LCD_SaveColors();
@@ -301,11 +308,26 @@ void youWinScreen() {
 		LCD_SetColors(YELLOW, BLACK);
 		char c[12] = "NEW RECORD!";
 		LCD_DisplayStringAt(0, 100, c, CENTER_MODE);
+		
 	} else {
+		char c[20];
 		LCD_SetColors(WHITE, BLACK);
-		char c[9] = "YOU WIN!";
+		switch(RNG_Get_RandomRange(0, 2)) {
+			case 0:
+				sprintf(c, "YOU WIN!");
+				break;
+			case 1:
+				sprintf(c, "WELL DONE!");
+				break;
+			case 2:
+				sprintf(c, "NICE WORK!");
+				break;
+		}
+		
 		LCD_DisplayStringAt(0, 100, c, CENTER_MODE);
 	}
+	
+	RNG_Close();
 	
 	LCD_SetColors(WHITE, BLACK);
 	
